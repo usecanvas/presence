@@ -9,7 +9,7 @@ const redisClient     = require('../lib/create-redis-client')();
 const should          = require('chai').should();
 
 describe('leave', () => {
-  let client, originalTTLUnit, originalTTL;
+  let client;
 
   beforeEach(() => {
     client = new MockClient();
@@ -27,11 +27,11 @@ describe('leave', () => {
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity }));
 
-    client.once('message', message => {
+    client.once('join', () => {
       dispatchMessage(client,
         JSON.stringify({ action: 'leave', space: space, identity: identity }));
 
-      client.once('message', message => {
+      client.once('leave', () => {
         redisClient.get(`spaces.${space}.${identity}`, (err, value) => {
           should.equal(value, null);
           done();

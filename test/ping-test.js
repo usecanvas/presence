@@ -8,7 +8,7 @@ const uuid            = require('node-uuid').v4;
 const redisClient     = require('../lib/create-redis-client')();
 
 describe('ping', () => {
-  let client, originalTTLUnit, originalTTL;
+  let client;
 
   beforeEach(() => {
     client = new MockClient();
@@ -26,7 +26,7 @@ describe('ping', () => {
     dispatchMessage(client,
       JSON.stringify({ action: 'ping', space: space, identity: identity }));
 
-    client.once('message', message => {
+    client.once('ping', () => {
       redisClient.get(`spaces.${space}.${identity}`, (err, value) => {
         value.should.eq(identity);
         done();
@@ -35,14 +35,13 @@ describe('ping', () => {
   });
 
   it('sends a ping message back', done => {
-    const identity1 = 'user1@example.com';
-    const identity2 = 'user2@example.com';
+    const identity = 'user1@example.com';
     const space     = uuid();
 
     dispatchMessage(client,
-      JSON.stringify({ action: 'ping', space: space, identity: identity1 }));
+      JSON.stringify({ action: 'ping', space: space, identity: identity }));
 
-    client.once('message', message => {
+    client.once('ping', message => {
       message.should.eql({ action: 'ping' });
       done();
     });
@@ -58,7 +57,7 @@ describe('ping', () => {
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity }));
 
-    client.once('message', message => {
+    client.once('join', () => {
       setTimeout(() => {
         dispatchMessage(client,
           JSON.stringify({ action: 'ping', space: space, identity: identity }));

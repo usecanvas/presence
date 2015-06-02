@@ -9,7 +9,9 @@ class MockClient extends EventEmitter {
   }
 
   send(message) {
-    this.emit('message', JSON.parse(message));
+    message = JSON.parse(message);
+    this.emit(message.action, message);
+    this.emit('message', message);
   }
 }
 

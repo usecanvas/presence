@@ -8,7 +8,7 @@ const uuid            = require('node-uuid').v4;
 const redisClient     = require('../lib/create-redis-client')();
 
 describe('join', () => {
-  let client, originalTTLUnit, originalTTL;
+  let client;
 
   beforeEach(() => {
     client = new MockClient();
@@ -26,7 +26,7 @@ describe('join', () => {
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity }));
 
-    client.once('message', message => {
+    client.once('message', () => {
       redisClient.get(`spaces.${space}.${identity}`, (err, value) => {
         value.should.eq(identity);
         done();
@@ -42,13 +42,13 @@ describe('join', () => {
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity1 }));
 
-    client.once('message', message => {
+    client.once('join', message => {
       message.members.should.eql([identity1]);
 
       dispatchMessage(client,
         JSON.stringify({ action: 'join', space: space, identity: identity2 }));
 
-      client.once('message', message => {
+      client.once('join', message => {
         message.members.sort().should.eql([identity1, identity2]);
         done();
       });
@@ -65,7 +65,7 @@ describe('join', () => {
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity }));
 
-    client.once('message', message => {
+    client.once('join', message => {
       message.members.should.eql([identity]);
 
       setTimeout(() => {
