@@ -15,7 +15,9 @@
   },
   "devDependencies": {
     "chai": "^2.3.0",
-    "mocha": "^2.2.5"
+    "foreman": "^1.3.0",
+    "mocha": "^2.2.5",
+    "nodemon": "^1.3.7"
   },
   "engines": {
     "io.js": "2.2.1"
@@ -32,6 +34,7 @@
     "url": "git+https://github.com/usecanvas/longhouse.git"
   },
   "scripts": {
+    "dev": "nf run -- nodemon --harmony_arrow_functions",
     "start": "node --harmony_arrow_functions index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
