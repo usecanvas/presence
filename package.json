@@ -1,0 +1,30 @@
+{
+  "name": "longhouse",
+  "description": "Simple server for establishing and sharing user presence",
+  "version": "1.0.0",
+  "author": "Jonathan Clem",
+  "bugs": {
+    "url": "https://github.com/usecanvas/longhouse/issues"
+  },
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "mocha": "^2.2.5"
+  },
+  "engines": {
+    "io.js": "2.2.1"
+  },
+  "homepage": "https://github.com/usecanvas/longhouse#readme",
+  "keywords": [
+    "presence",
+    "realtime"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usecanvas/longhouse.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
