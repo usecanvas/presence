@@ -23,7 +23,9 @@ npm run dev
 Longhouse provides an interface for establishing and tracking user presence in
 a given namespace. It supports the following actions:
 
-### `join`
+### Actions
+
+#### `join`
 
 Joins the given namespace:
 
@@ -45,7 +47,7 @@ members:
 }
 ```
 
-### `ping`
+#### `ping`
 
 Longhouse only marks users as present for a finite amount of time before
 assuming they have left (the default is 60 seconds). A user can tell Longhouse
@@ -67,7 +69,7 @@ Longhouse will acknowledge with a response ping:
 }
 ```
 
-### `leave`
+#### `leave`
 
 A user may leave a space by sending a leave message:
 
@@ -84,6 +86,50 @@ Longhouse will acknowledge by sending an ack leave message:
 ```json
 {
   "action": "leave"
+}
+```
+
+### Subscription Events
+
+When a user has joined a space via a `join` action, they are then subscribed to
+events on that action. They will be subscribed until they leave or their
+connection closes.
+
+Users will not receive subscription events for their own actions.
+
+#### `remote join`
+
+A user has joined a space to which the client is subscribed.
+
+```json
+{
+  "action"  : "remote join",
+  "space"   : "5e01bce8-76eb-4179-abf4-358975da3c94",
+  "identity": "user@example.com"
+}
+```
+
+#### `remote expire`
+
+A user's presence has expired from a space to which the client is subscribed.
+
+```json
+{
+  "action"  : "remote expire",
+  "space"   : "5e01bce8-76eb-4179-abf4-358975da3c94",
+  "identity": "user@example.com"
+}
+```
+
+#### `remote leave`
+
+A user has left a space to which the client is subscribed.
+
+```json
+{
+  "action"  : "remote leave",
+  "space"   : "5e01bce8-76eb-4179-abf4-358975da3c94",
+  "identity": "user@example.com"
 }
 ```
 
