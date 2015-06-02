@@ -22,9 +22,26 @@ function runWSServer(httpServer) {
 }
 
 function onConnection(client) {
-  client.on('message', onMessage);
+  client.on('message', dispatchMessage);
 }
 
-function onMessage(message) {
-  this.send(message);
+function dispatchMessage(message) {
+  try {
+    message = JSON.parse(message);
+  } catch(err) {
+    handleUnparsableMessage(this, message);
+    return;
+  }
+
+  sendMessage(this, message);
+}
+
+function handleUnparsableMessage(client, message) {
+  sendMessage(client,
+    { errors: [{ detail: 'Client passed non-JSON message.' }]});
+}
+
+function sendMessage(client, message) {
+  message = JSON.stringify(message);
+  client.send(message);
 }
