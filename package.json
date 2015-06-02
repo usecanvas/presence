@@ -1,7 +1,7 @@
 {
   "name": "longhouse",
   "description": "Simple server for establishing and sharing user presence",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Jonathan Clem",
   "bugs": {
     "url": "https://github.com/usecanvas/longhouse/issues"
