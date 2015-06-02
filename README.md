@@ -86,6 +86,11 @@ Longhouse will acknowledge by sending an ack leave message:
 }
 ```
 
+### Configuration
+
+- `PRESENCE_TTL_UNIT`: Unit for presence TTL. `EX` for seconds, `PX` for ms. Defaults to `EX` for seconds.
+- `PRESENCE_TTL`: The value of presence TTL. Defaults to 60.
+
 ## Errors
 
 When Longhouse encounters an error based on a user's message, it will send back
@@ -99,6 +104,20 @@ a message in this format:
 
 Note the top-level "errors" key, which is an array of error objects, which each
 have a single "detail" key.
+
+## How does it work?
+
+Longhouse is extremely simple. When a user joins, it sets a key in Redis with
+the format `spaces.${spaceUUID}.${userIdentity}` with a value of the user
+identity. The only validation it does is that the UUID is a v4 UUID and that
+the identity param is present (it can be any value).
+
+These keys have a default expire time of 60 seconds.
+
+In order to determine who is present in a given space, Longhouse just gets every
+key that matches the pattern `spaces.${spaceUUID}.*`. The user identity for each
+present user is in the key itself, the values are only used for testing
+purposes.
 
 ## Testing
 
