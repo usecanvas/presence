@@ -14,6 +14,7 @@ cd longhouse
 nvm install
 nvm use
 npm i
+echo "REDIS_URL=redis://localhost:6379" > .env
 npm run dev
 ```
 
@@ -134,7 +135,7 @@ Then, one can connect to Longhouse using wscat once they've started the
 server:
 
 ```bash
-wscat -c localhost:5000
+wscat -c ws://localhost:5000
 > {"action":"join","space":"5e01bce8-76eb-4179-abf4-358975da3c94","identity":"user@example.com"}
   < {"action":"join","members":["user@example.com"]}
 ```
