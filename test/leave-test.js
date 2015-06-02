@@ -25,7 +25,7 @@ describe('leave', () => {
     const space    = uuid();
 
     dispatchMessage(client,
-      JSON.stringify({ action: 'ping', space: space, identity: identity }));
+      JSON.stringify({ action: 'join', space: space, identity: identity }));
 
     client.once('message', message => {
       dispatchMessage(client,
