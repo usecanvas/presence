@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "koa": "^0.21.0",
+    "logfmt": "^1.2.0",
     "teamster": "^1.2.0",
+    "validator": "^3.40.0",
     "ws": "^0.7.2"
   },
   "devDependencies": {
