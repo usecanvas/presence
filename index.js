@@ -50,36 +50,62 @@ function dispatchMessage(message) {
     return;
   }
 
+  const presenceKey   = getPresenceKey(message.space, message.identity);
+  const nsKeyPattern  = getNSKeyPattern(message.space);
+  const presenceTTL   = 60; // seconds
+  const presenceValue = 1;  // arbitrary, we only use the keys
+
   switch (message.action) {
     case 'join':
       logfmt.log({ action: 'join' });
 
       redisCmd.multi()
-        .sadd(message.space, message.identity)
-        .smembers(message.space)
+        .sadd(presenceKey, presenceValue)
+        .expire(presenceKey, presenceTTL)
+        .keys(nsKeyPattern)
         .exec((err, replies) => {
           if (err) {
             handleRedisError(client, err);
             return;
           }
 
-          sendMessage(client, { action: 'join', members: replies[1] });
+          const presenceKeys = replies[2];
+          const members      = presenceKeys.map(extractIdentityFromPresenceKey);
+          sendMessage(client, { action: 'join', members: members });
         });
 
       break;
     case 'ping':
       logfmt.log({ action: 'ping' });
-      sendMessage(client, { action: 'ping' });
-      redisCmd.sadd(message.space, message.identity);
+      redisCmd.multi()
+        .sadd(presenceKey, presenceValue)
+        .expire(presenceKey, presenceTTL)
+        .exec(err => {
+          if (err) {
+            handleRedisError(client, err);
+            return;
+          }
+
+          sendMessage(client, { action: 'ping' });
+        });
+
       break;
     case 'leave':
       logfmt.log({ action: 'leave' });
       sendMessage(client, { action: 'leave' });
-      redisCmd.srem(message.space, message.identity);
+      redisCmd.srem(spaceKey, message.identity);
       break;
     default:
       handleUnrecognizedAction(client, message);
   }
+}
+
+function getPresenceKey(space, identity) {
+  return `spaces.${space}.${identity}`;
+}
+
+function getNSKeyPattern(space) {
+  return `spaces.${space}.*`;
 }
 
 function createRedisClient() {
@@ -87,6 +113,10 @@ function createRedisClient() {
   const password = url.auth ? url.auth.split(':')[1] : null;
   return redis.createClient(redisURL.port, redisURL.hostname,
     { auth_pass: password });
+}
+
+function extractIdentityFromPresenceKey(presenceKey) {
+  return presenceKey.split('.').slice(2).join('.');
 }
 
 function handleRedisError(client, error) {
