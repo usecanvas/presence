@@ -7,8 +7,10 @@
     "url": "https://github.com/usecanvas/longhouse/issues"
   },
   "dependencies": {
+    "hiredis": "^0.4.0",
     "koa": "^0.21.0",
     "logfmt": "^1.2.0",
+    "redis": "^0.12.1",
     "teamster": "^1.2.0",
     "validator": "^3.40.0",
     "ws": "^0.7.2"
