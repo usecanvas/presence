@@ -6,6 +6,11 @@
   "bugs": {
     "url": "https://github.com/usecanvas/longhouse/issues"
   },
+  "dependencies": {
+    "koa": "^0.21.0",
+    "teamster": "^1.2.0",
+    "ws": "^0.7.2"
+  },
   "devDependencies": {
     "chai": "^2.3.0",
     "mocha": "^2.2.5"
@@ -25,6 +30,7 @@
     "url": "git+https://github.com/usecanvas/longhouse.git"
   },
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
