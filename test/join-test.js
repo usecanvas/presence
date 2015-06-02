@@ -8,10 +8,15 @@ const uuid            = require('node-uuid').v4;
 const redisClient     = require('../lib/create-redis-client')();
 
 describe('join', () => {
-  let client;
+  let client, originalTTLUnit, originalTTL;
 
   beforeEach(() => {
     client = new MockClient();
+  });
+
+  afterEach(() => {
+    delete process.env.PRESENCE_TTL;
+    delete process.env.PRESENCE_TTL_UNIT;
   });
 
   it('sets the user as present', done => {
@@ -47,6 +52,32 @@ describe('join', () => {
         message.members.sort().should.eql([identity1, identity2]);
         done();
       });
+    });
+  });
+
+  it('sets a TTL on the user presence', done => {
+    const identity = 'user@example.com';
+    const space    = uuid();
+
+    process.env.PRESENCE_TTL      = 10;
+    process.env.PRESENCE_TTL_UNIT = 'PX';
+
+    dispatchMessage(client,
+      JSON.stringify({ action: 'join', space: space, identity: identity }));
+
+    client.once('message', message => {
+      message.members.should.eql([identity]);
+
+      setTimeout(() => {
+        redisClient.keys('*', (err, keys) => {
+          if (err) {
+            throw err;
+          }
+
+          keys.should.eql([]);
+          done();
+        });
+      }, process.env.PRESENCE_TTL * 2);
     });
   });
 });
