@@ -1,5 +1,6 @@
 'use strict';
 
+const configureRedis  = require('./lib/configure-redis');
 const http            = require('http');
 const koa             = require('koa');
 const logfmt          = require('logfmt');
@@ -8,10 +9,14 @@ const teamster        = require('teamster');
 const ws              = require('ws');
 const app             = koa();
 
-teamster.run(runServer, {
-  fork      : process.env.NODE_ENV === 'production',
-  numWorkers: parseInt(process.env.NUM_WORKERS, 10) || 1,
-});
+configureRedis(createTeamster);
+
+function createTeamster() {
+  teamster.run(runServer, {
+    fork      : process.env.NODE_ENV === 'production',
+    numWorkers: parseInt(process.env.NUM_WORKERS, 10) || 1,
+  });
+}
 
 function runServer() {
   const port = parseInt(process.env.PORT, 10) || 5000;
