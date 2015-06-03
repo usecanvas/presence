@@ -4,5 +4,10 @@
     "destination": "docs",
     "private": true,
     "readme": "README.md"
+  },
+  "templates": {
+    "default": {
+      "includeDate": false
+    }
   }
 }
