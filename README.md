@@ -27,7 +27,7 @@ a given namespace. It supports the following actions:
 
 #### `join`
 
-Joins the given namespace:
+Joins the given namespace until the user leaves or expires:
 
 ```json
 {
@@ -55,9 +55,7 @@ that they're still present by sending a ping:
 
 ```json
 {
-  "action"  : "ping",
-  "space"   : "5e01bce8-76eb-4179-abf4-358975da3c94",
-  "identity": "user@example.com"
+  "action"  : "ping"
 }
 ```
 
@@ -75,9 +73,7 @@ A user may leave a space by sending a leave message:
 
 ```json
 {
-  "action"  : "leave",
-  "space"   : "5e01bce8-76eb-4179-abf4-358975da3c94",
-  "identity": "user@example.com"
+  "action"  : "leave"
 }
 ```
 

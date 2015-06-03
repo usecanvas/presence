@@ -28,7 +28,7 @@ describe('remote leave', () => {
 
       client2.once('join', () => {
         dispatchMessage(client,
-          JSON.stringify({ action: 'leave', space: space, identity: identity }));
+          JSON.stringify({ action: 'leave' }));
 
         client2.once('remote leave', message => {
           message.should.eql({ action: 'remote leave', space: space, identity: identity });

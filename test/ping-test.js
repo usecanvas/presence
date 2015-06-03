@@ -22,7 +22,7 @@ describe('ping', () => {
 
     client.once('join', () => {
       dispatchMessage(client,
-        JSON.stringify({ action: 'ping', space: space, identity: identity }));
+        JSON.stringify({ action: 'ping' }));
 
       client.once('ping', message => {
         message.should.eql({ action: 'ping' });
@@ -43,7 +43,7 @@ describe('ping', () => {
 
       setTimeout(() => { // So that at least 1ms passes
         dispatchMessage(client,
-          JSON.stringify({ action: 'ping', space: space, identity: identity }));
+          JSON.stringify({ action: 'ping' }));
 
         client.once('ping', () => {
           client.__meta.joinedAt.should.be.gt(joinedAt);

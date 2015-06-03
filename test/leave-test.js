@@ -24,7 +24,7 @@ describe('leave', () => {
 
     client.once('join', () => {
       dispatchMessage(client,
-        JSON.stringify({ action: 'leave', space: space, identity: identity }));
+        JSON.stringify({ action: 'leave' }));
 
       client.once('leave', () => {
         redisClient.get(`spaces.${space}.${identity}`, (err, value) => {
