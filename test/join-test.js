@@ -37,6 +37,7 @@ describe('join', () => {
   it('returns the list of present users', done => {
     const identity1 = 'user1@example.com';
     const identity2 = 'user2@example.com';
+    const client2   = new MockClient();
     const space     = uuid();
 
     dispatchMessage(client,
@@ -45,10 +46,10 @@ describe('join', () => {
     client.once('join', message => {
       message.members.should.eql([identity1]);
 
-      dispatchMessage(client,
+      dispatchMessage(client2,
         JSON.stringify({ action: 'join', space: space, identity: identity2 }));
 
-      client.once('join', message => {
+      client2.once('join', message => {
         message.members.sort().should.eql([identity1, identity2]);
         done();
       });

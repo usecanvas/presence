@@ -15,7 +15,6 @@ describe('remote expire', () => {
 
   afterEach(() => {
     delete process.env.PRESENCE_TTL;
-    delete process.env.PRESENCE_TTL_UNIT;
   });
 
   it('notifies when a remote user has expired', done => {
@@ -24,8 +23,7 @@ describe('remote expire', () => {
     const identity2 = 'user2@example.com';
     const space     = uuid();
 
-    process.env.PRESENCE_TTL      = 100;
-    process.env.PRESENCE_TTL_UNIT = 'PX';
+    process.env.PRESENCE_TTL = 100;
 
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity }));
@@ -39,7 +37,7 @@ describe('remote expire', () => {
           message.should.eql({ action: 'remote expire', space: space, identity: identity });
           done();
         });
-      }, process.env.PRESENCE_TTL / 2);
+      }, process.env.PRESENCE_TTL * 0.75);
     });
   });
 });

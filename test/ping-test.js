@@ -18,31 +18,22 @@ describe('ping', () => {
     delete process.env.PRESENCE_TTL;
   });
 
-  it('sets the user as present', done => {
-    const identity = 'user@example.com';
-    const space    = uuid();
-
-    dispatchMessage(client,
-      JSON.stringify({ action: 'ping', space: space, identity: identity }));
-
-    client.once('ping', () => {
-      redisClient.get(`spaces.${space}.${identity}`, (err, value) => {
-        value.should.eq(identity);
-        done();
-      });
-    });
-  });
-
   it('sends a ping message back', done => {
     const identity = 'user1@example.com';
     const space     = uuid();
 
     dispatchMessage(client,
-      JSON.stringify({ action: 'ping', space: space, identity: identity }));
+      JSON.stringify({ action: 'join', space: space, identity: identity }));
 
-    client.once('ping', message => {
-      message.should.eql({ action: 'ping' });
-      done();
+    client.once('join', () => {
+      dispatchMessage(client,
+        JSON.stringify({ action: 'ping', space: space, identity: identity }));
+
+      client.once('ping', message => {
+        console.log("WHAT")
+        message.should.eql({ action: 'ping' });
+        done();
+      });
     });
   });
 
