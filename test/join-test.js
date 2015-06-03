@@ -3,6 +3,7 @@
 require('./test-helper');
 
 const MockClient      = require('./mock-client');
+const clientExpirer   = require('../lib/client-expirer');
 const dispatchMessage = require('../lib/dispatch-message');
 const uuid            = require('node-uuid').v4;
 const redisClient     = require('../lib/create-redis-client')();
@@ -12,11 +13,6 @@ describe('join', () => {
 
   beforeEach(() => {
     client = new MockClient();
-  });
-
-  afterEach(() => {
-    delete process.env.PRESENCE_TTL;
-    delete process.env.PRESENCE_TTL_UNIT;
   });
 
   it('sets the user as present', done => {
@@ -37,6 +33,7 @@ describe('join', () => {
   it('returns the list of present users', done => {
     const identity1 = 'user1@example.com';
     const identity2 = 'user2@example.com';
+    const client2   = new MockClient();
     const space     = uuid();
 
     dispatchMessage(client,
@@ -45,10 +42,10 @@ describe('join', () => {
     client.once('join', message => {
       message.members.should.eql([identity1]);
 
-      dispatchMessage(client,
+      dispatchMessage(client2,
         JSON.stringify({ action: 'join', space: space, identity: identity2 }));
 
-      client.once('join', message => {
+      client2.once('join', message => {
         message.members.sort().should.eql([identity1, identity2]);
         done();
       });
@@ -59,8 +56,7 @@ describe('join', () => {
     const identity = 'user@example.com';
     const space    = uuid();
 
-    process.env.PRESENCE_TTL      = 10;
-    process.env.PRESENCE_TTL_UNIT = 'PX';
+    clientExpirer.addClientToPool(client);
 
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity }));

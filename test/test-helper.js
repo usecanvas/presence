@@ -2,17 +2,17 @@
 
 require('chai').should();
 
-process.env.REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
+process.env.PRESENCE_TTL = 100;
+process.env.REDIS_URL    = process.env.REDIS_URL || 'redis://localhost:6379';
 
-const configureRedis = require('../lib/configure-redis');
+const clientExpirer  = require('../lib/client-expirer');
 const redisClient    = require('../lib/create-redis-client')();
 const pubsub         = require('../lib/pubsub');
 
-before(done => {
-  configureRedis(done);
-});
+require('../lib/client-expirer');
 
 afterEach(done => {
+  clientExpirer.clearClientPool();
   pubsub.flushSpaces();
   redisClient.flushdb(done);
 });
