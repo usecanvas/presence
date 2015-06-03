@@ -135,8 +135,7 @@ A user has left a space to which the client is subscribed.
 
 ### Configuration
 
-- `PRESENCE_TTL_UNIT`: Unit for presence TTL. `EX` for seconds, `PX` for ms. Defaults to `EX` for seconds.
-- `PRESENCE_TTL`: The value of presence TTL. Defaults to 60.
+- `PRESENCE_TTL`: The value of presence TTL in ms, defaults to `60000`.
 
 ## Errors
 
