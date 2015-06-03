@@ -3,6 +3,7 @@
 const http            = require('http');
 const koa             = require('koa');
 const logfmt          = require('logfmt');
+const clientExpirer   = require('./lib/client-expirer');
 const dispatchMessage = require('./lib/dispatch-message');
 const teamster        = require('teamster');
 const ws              = require('ws');
@@ -59,5 +60,6 @@ function runWSServer(httpServer) {
  */
 function onConnection(client) {
   logfmt.log({ event: 'client connected' });
+  clientExpirer.addClientToPool(client);
   client.on('message', message => dispatchMessage(client, message));
 }

@@ -15,11 +15,6 @@ describe('leave', () => {
     client = new MockClient();
   });
 
-  afterEach(() => {
-    delete process.env.PRESENCE_TTL;
-    delete process.env.PRESENCE_TTL_UNIT;
-  });
-
   it('sets the user as not present', done => {
     const identity = 'user@example.com';
     const space    = uuid();

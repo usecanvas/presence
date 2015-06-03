@@ -5,17 +5,12 @@ require('./test-helper');
 const MockClient      = require('./mock-client');
 const dispatchMessage = require('../lib/dispatch-message');
 const uuid            = require('node-uuid').v4;
-const redisClient     = require('../lib/create-redis-client')();
 
 describe('ping', () => {
   let client;
 
   beforeEach(() => {
     client = new MockClient();
-  });
-
-  afterEach(() => {
-    delete process.env.PRESENCE_TTL;
   });
 
   it('sends a ping message back', done => {
@@ -30,7 +25,6 @@ describe('ping', () => {
         JSON.stringify({ action: 'ping', space: space, identity: identity }));
 
       client.once('ping', message => {
-        console.log("WHAT")
         message.should.eql({ action: 'ping' });
         done();
       });
@@ -38,26 +32,24 @@ describe('ping', () => {
   });
 
   it('bumps the TTL on the user presence', done => {
-    const identity = 'user@example.com';
+    const identity = 'user!!@example.com';
     const space    = uuid();
-
-    process.env.PRESENCE_TTL = 100;
 
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity }));
 
     client.once('join', () => {
-      setTimeout(() => {
+      const joinedAt = client.__meta.joinedAt;
+
+      setTimeout(() => { // So that at least 1ms passes
         dispatchMessage(client,
           JSON.stringify({ action: 'ping', space: space, identity: identity }));
 
-        setTimeout(() => {
-          redisClient.get(`spaces.${space}.${identity}`, (err, value) => {
-            value.should.eql(identity);
-            done();
-          });
-        }, process.env.PRESENCE_TTL * 0.75);
-      }, process.env.PRESENCE_TTL / 2);
+        client.once('ping', () => {
+          client.__meta.joinedAt.should.be.gt(joinedAt);
+          done();
+        });
+      }, 1);
     });
   });
 });

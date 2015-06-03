@@ -3,6 +3,7 @@
 require('./test-helper');
 
 const MockClient      = require('./mock-client');
+const clientExpirer   = require('../lib/client-expirer');
 const dispatchMessage = require('../lib/dispatch-message');
 const uuid            = require('node-uuid').v4;
 const redisClient     = require('../lib/create-redis-client')();
@@ -12,11 +13,6 @@ describe('join', () => {
 
   beforeEach(() => {
     client = new MockClient();
-  });
-
-  afterEach(() => {
-    delete process.env.PRESENCE_TTL;
-    delete process.env.PRESENCE_TTL_UNIT;
   });
 
   it('sets the user as present', done => {
@@ -60,7 +56,7 @@ describe('join', () => {
     const identity = 'user@example.com';
     const space    = uuid();
 
-    process.env.PRESENCE_TTL = 10;
+    clientExpirer.addClientToPool(client);
 
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity }));
