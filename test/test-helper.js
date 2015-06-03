@@ -4,13 +4,8 @@ require('chai').should();
 
 process.env.REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 
-const configureRedis = require('../lib/configure-redis');
 const redisClient    = require('../lib/create-redis-client')();
 const pubsub         = require('../lib/pubsub');
-
-before(done => {
-  configureRedis(done);
-});
 
 afterEach(done => {
   pubsub.flushSpaces();

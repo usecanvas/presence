@@ -1,6 +1,5 @@
 'use strict';
 
-const configureRedis  = require('./lib/configure-redis');
 const http            = require('http');
 const koa             = require('koa');
 const logfmt          = require('logfmt');
@@ -14,7 +13,7 @@ const app             = koa();
  * @module server
  */
 
-configureRedis(createTeamster);
+createTeamster();
 
 /**
  * Create the Teamster configuration, which is 1 or more web processes.
