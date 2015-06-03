@@ -59,8 +59,7 @@ describe('join', () => {
     const identity = 'user@example.com';
     const space    = uuid();
 
-    process.env.PRESENCE_TTL      = 10;
-    process.env.PRESENCE_TTL_UNIT = 'PX';
+    process.env.PRESENCE_TTL = 10;
 
     dispatchMessage(client,
       JSON.stringify({ action: 'join', space: space, identity: identity }));

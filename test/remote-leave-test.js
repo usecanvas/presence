@@ -6,7 +6,7 @@ const MockClient      = require('./mock-client');
 const dispatchMessage = require('../lib/dispatch-message');
 const uuid            = require('node-uuid').v4;
 
-describe('remote join', () => {
+describe('remote leave', () => {
   let client;
 
   beforeEach(() => {
