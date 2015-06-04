@@ -15,7 +15,7 @@ nvm install
 nvm use
 npm install
 echo "REDIS_URL=redis://localhost:6379" > .env
-echo "PRESENCE_TTL=30000" > .env
+echo "PRESENCE_TTL=30000" >> .env
 npm run dev
 ```
 
