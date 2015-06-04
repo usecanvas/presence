@@ -64,8 +64,9 @@ A client has left the space (either by expiration or closing their connection).
 
 ### Configuration
 
-- `process.env.PRESENCE_TTL` The time (in ms) after which client presence will
+- `$PRESENCE_TTL` The time (in ms) after which client presence will
   automatically expire
+- `$REDIS_URL` The URL to the Redis server
 
 ### Errors
 
