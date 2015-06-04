@@ -128,10 +128,15 @@ server:
 # Terminal 1
 wscat -c ws://localhost:5000/space-id?identity=user@example.com
 >
-  < {"members":["user@example.com"]}
+  < {"clients": [
+      { "id": "123", "identity": "user@example.com" }
+    ]
 
 # Terminal 2
 wscat -c ws://localhost:5000/space-id?identity=another-user@example.com
 >
-  < {"members":["another-user@example.com","user@example.com"]}
+  < {"clients": [
+      { "id": "123", "identity": "user@example.com" },
+      { "id": "456", "identity": "another-user@example.com" }
+    ]
 ```
