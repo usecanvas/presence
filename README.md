@@ -53,7 +53,7 @@ be sent less frequently than the value of `$PRESENCE_TTL` (in milliseconds).
 {"action": "ping"}
 ```
 
-### Remove Events
+### Remote Events
 
 When relevant events happen on remote clients, Longhouse will send a message to
 each client connected to the space where the event occurred.
