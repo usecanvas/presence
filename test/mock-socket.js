@@ -1,8 +1,9 @@
 'use strict';
 
 class MockSocket {
-  constructor() {
-    this.inbox = [];
+  constructor(pathQuery) {
+    this.inbox      = [];
+    this.upgradeReq = { url: `http://example.com${pathQuery}`, };
   }
 
   send(message) {
