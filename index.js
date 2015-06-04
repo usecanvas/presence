@@ -3,6 +3,7 @@
 const ClientRegister = require('./lib/client-register');
 const ClientMessager = require('./lib/client-messager');
 const HTTP           = require('http');
+const Initializers   = require('./initializers');
 const Logger         = require('./lib/logger');
 const Teamster       = require('teamster');
 const UUID           = require('node-uuid');
@@ -17,11 +18,9 @@ const app            = require('koa')();
  * @module Main
  */
 
-configureRedis()
+Initializers.start()
   .then(createTeamster)
-  .catch(err => {
-    throw err;
-  });
+  .catch(err => { throw err; });
 
 /**
  * Start 1 or more web processes running our app.

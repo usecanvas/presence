@@ -11,11 +11,11 @@ module.exports = configureRedis;
  */
 function configureRedis() {
   return Redis.configAsync('get', 'notify-keyspace-events').then(config => {
-    if (config[1].indexOf('gxK') > -1) {
+    if (config[1].indexOf('$gxK') > -1) {
       return;
     }
 
-    config = `${config[1]}gxK`;
+    config = `${config[1]}$gxK`;
     return Redis.configAsync('set', 'notify-keyspace-events', config);
   });
 }
