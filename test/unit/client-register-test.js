@@ -44,7 +44,7 @@ describe('ClientRegister', () => {
     it('sends the client the current members list', () => {
       return ClientRegister.registerClient('clientID', socket).then(client => {
         client.socket.inbox.should.eql([JSON.stringify({
-          members: [client.identity]
+          clients: [{ id: client.id, identity: client.identity }]
         })]);
       });
     });

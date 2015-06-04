@@ -28,6 +28,18 @@ Longhouse, open a WebSocket connection to a URL like:
 wss://longhouse.example.com/space_uuid?identity=email@example.com
 ```
 
+After joining, the client will quickly receive a message with the current
+clients connected to the space:
+
+```json
+{
+  "clients": [
+    { "id": "123", "identity": "user@example.com" },
+    { "id": "456", "identity": "user2@example.com" }
+  ]
+}
+```
+
 ### Actions
 
 #### `ping`
@@ -51,7 +63,10 @@ each client connected to the space where the event occurred.
 A client has joined the space.
 
 ```json
-{ "event": "remote join", "identity": "user@example.com" }
+{
+  "event": "remote join",
+  "client": { "id": "123", "identity": "user@example.com" }
+}
 ```
 
 #### `remote leave`
@@ -59,7 +74,10 @@ A client has joined the space.
 A client has left the space (either by expiration or closing their connection).
 
 ```json
-{ "event": "remote leave", "identity": "user@example.com" }
+{
+  "event": "remote leave",
+  "client": { "id": "123", "identity": "user@example.com" }
+}
 ```
 
 ### Configuration
