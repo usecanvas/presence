@@ -46,7 +46,12 @@ module.exports = {
  * @param {object} message The message to send, JSON-serialized, to the client
  */
 function send(client, message) {
-  message = JSON.stringify(message);
+  if (process.env.PRETTIFY_JSON_MESSAGES === 'true') {
+    message = JSON.stringify(message, null, 2);
+  } else {
+    message = JSON.stringify(message);
+  }
+
   client.socket.send(message);
 }
 

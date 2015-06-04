@@ -32,6 +32,7 @@ const Bluebird       = require('bluebird');
 const ClientMessager = require('./client-messager');
 const Redis          = require('./redis');
 const parseURL       = require('url-parse');
+const pick           = require('lodash').pick;
 const objectValues   = require('lodash').values;
 
 /**
@@ -43,6 +44,7 @@ const objectValues   = require('lodash').values;
 module.exports = {
   clientsInSpace  : clientsInSpace,
   deregisterClient: deregisterClient,
+  removeAllClients: removeAllClients,
   getClient       : getClient,
   renewClient     : renewClient,
   registerClient  : registerClient,
@@ -122,8 +124,10 @@ function registerClient(clientID, socket) {
     return Redis.keysAsync(nsKeyPattern);
   }).then(presenceKeys => {
     clients[client.id] = client;
-    const identities = presenceKeys.map(extractIdentityFromPresenceKey);
-    return ClientMessager.send(client, { members: identities });
+    const members = presenceKeys.map(getClientFromPresenceKey)
+      .map(client => pick(client, 'id', 'identity'));
+
+    return ClientMessager.send(client, { clients: members });
   }).then(() => client);
 }
 
@@ -168,14 +172,14 @@ function createClient(clientID, socket) {
 }
 
 /**
- * Extract an identity value from a presence key.
+ * Extract an client from a presence key.
  *
  * @private
  * @param {string} presenceKey A presence key
- * @return {string} A client identity
+ * @return {Client} A client
  */
-function extractIdentityFromPresenceKey(presenceKey) {
-  return presenceKey.split('.').slice(4).join('.');
+function getClientFromPresenceKey(presenceKey) {
+  return clients[presenceKey.split('.').slice(3, 4).join('.')];
 }
 
 /**
@@ -201,6 +205,16 @@ function getPresenceKey(client) {
 }
 
 /**
+ * Forcibly remove all clients from the registry (but do not remove them from
+ * Redis).
+ */
+function removeAllClients() {
+  for (let key in clients) {
+    delete clients[key];
+  }
+}
+
+/**
  * Set a client's expiration time in Redis.
  *
  * @private
@@ -209,7 +223,8 @@ function getPresenceKey(client) {
  */
 function setClientExpiration(client) {
   const presenceKey = getPresenceKey(client);
-  return Redis.expireAsync(presenceKey, process.env.PRESENCE_TTL);
+  return Redis.pexpireAsync(presenceKey,
+    parseInt(process.env.PRESENCE_TTL, 10) || 60000);
 }
 
 /**

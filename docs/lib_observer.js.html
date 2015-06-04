@@ -69,14 +69,14 @@ function handleMessage(_pattern, channel, message) {
 
   switch (eventName) {
     case 'set':
-      publishEvent('remote join', spaceID, identity);
+      publishEvent('remote join', spaceID, clientID, identity);
       break;
     case 'expired':
       expireClient(ClientRegister.getClient(clientID));
-      publishEvent('remote leave', spaceID, identity);
+      publishEvent('remote leave', spaceID, clientID, identity);
       break;
     case 'del':
-      publishEvent('remote leave', spaceID, identity);
+      publishEvent('remote leave', spaceID, clientID, identity);
       break;
     default:
       return;
@@ -90,6 +90,10 @@ function handleMessage(_pattern, channel, message) {
  * @param {Client} client The expired client
  */
 function expireClient(client) {
+  if (!client) {
+    return;
+  }
+
   ClientMessager.send(client, { event: 'expired' });
   client.socket.close();
   ClientRegister.deregisterClient(client);
@@ -107,7 +111,12 @@ function publishEvent(eventName, spaceID, identity) {
   const clients = ClientRegister.clientsInSpace(spaceID);
 
   for (let i = 0, len = clients.length; i &lt; len; i++) {
-    ClientMessager.send(clients[i], { event: eventName, identity: identity });
+    const client = clients[i];
+    
+    ClientMessager.send(client, {
+      event : eventName,
+      client: { id: client.id, identity: client.identity },
+    });
   }
 }
 </code></pre>
