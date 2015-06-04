@@ -51,7 +51,7 @@ each client connected to the space where the event occurred.
 A client has joined the space.
 
 ```json
-{ "event": "remote join", identity: "user@example.com" }
+{ "event": "remote join", "identity": "user@example.com" }
 ```
 
 #### `remote leave`
@@ -59,7 +59,7 @@ A client has joined the space.
 A client has left the space (either by expiration or closing their connection).
 
 ```json
-{ "event": "remote leave", identity: "user@example.com" }
+{ "event": "remote leave", "identity": "user@example.com" }
 ```
 
 ### Configuration
@@ -73,7 +73,7 @@ When an error occurs that is relevant to the client, an error message will be
 sent in this format:
 
 ```json
-{ error: "Error message" }
+{ "error": "Error message" }
 ```
 
 An error may or may not result in Longhouse terminating the socket connection.
