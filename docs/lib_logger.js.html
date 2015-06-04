@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: lib/send-message.js</title>
+    <title>JSDoc: Source: lib/logger.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: lib/send-message.js</h1>
+    <h1 class="page-title">Source: lib/logger.js</h1>
 
     
 
@@ -28,22 +28,37 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-/**
- * A module for sending messages to clients
- * @module sendMessage
- */
-
-module.exports = sendMessage;
+const Logfmt = require('logfmt');
+const merge  = require('lodash').merge;
 
 /**
- * Send a message to a client.
+ * Logs messages to the console in the Logfmt style
  *
- * @param {ws.Client} client The client to send the message to
- * @param {Object} message A JSON-serializable message to send to the client
+ * @module Logger
  */
-function sendMessage(client, message) {
-  message = JSON.stringify(message);
-  client.send(message);
+
+module.exports = {
+  log: log,
+  error: error,
+};
+
+/**
+ * Log a message to the console in the Logfmt style.
+ *
+ * @param {object} message The message to be logged
+ */
+function log(message) {
+  const now = new Date().toISOString();
+  Logfmt.log(merge({ time: now }, message));
+}
+
+/**
+ * Log an error to the console in the Logfmt style.
+ *
+ * @param {Error} err The error to be logged
+ */
+function error(err) {
+  Logfmt.error(err);
 }
 </code></pre>
         </article>

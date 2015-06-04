@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: sendMessage</title>
+    <title>JSDoc: Module: ClientMessager</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: sendMessage</h1>
+    <h1 class="page-title">Module: ClientMessager</h1>
 
     
 
@@ -38,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>A module for sending messages to clients</p></div>
+            <div class="description"><p>Sends messages to Clients.</p></div>
         
 
         
@@ -87,7 +87,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_send-message.js.html">lib/send-message.js</a>, <a href="lib_send-message.js.html#line3">line 3</a>
+        <a href="lib_client-messager.js.html">lib/client-messager.js</a>, <a href="lib_client-messager.js.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -137,14 +137,14 @@
 
     
 
-    <h4 class="name" id="~sendMessage"><span class="type-signature">(inner) </span>sendMessage<span class="signature">(client, message)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~error"><span class="type-signature">(inner) </span>error<span class="signature">(client, err)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send a message to a client.</p>
+    <p>Send an error message to a Client.</p>
 </div>
 
 
@@ -186,7 +186,7 @@
             <td class="type">
             
                 
-<span class="param-type">ws.Client</span>
+<span class="param-type">Client</span>
 
 
             
@@ -196,20 +196,20 @@
 
             
 
-            <td class="description last"><p>The client to send the message to</p></td>
+            <td class="description last"><p>The client to send the error to</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>message</code></td>
+                <td class="name"><code>err</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Error</span>
 
 
             
@@ -219,7 +219,7 @@
 
             
 
-            <td class="description last"><p>A JSON-serializable message to send to the client</p></td>
+            <td class="description last"><p>The error to send to the client</p></td>
         </tr>
 
     
@@ -260,7 +260,161 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_send-message.js.html">lib/send-message.js</a>, <a href="lib_send-message.js.html#line16">line 16</a>
+        <a href="lib_client-messager.js.html">lib/client-messager.js</a>, <a href="lib_client-messager.js.html#line31">line 31</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~send"><span class="type-signature">(inner) </span>send<span class="signature">(client, message)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Send a message to a Client.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>client</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Client</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The client to send the message to</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The message to send, JSON-serialized, to the client</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_client-messager.js.html">lib/client-messager.js</a>, <a href="lib_client-messager.js.html#line20">line 20</a>
     </li></ul></dd>
     
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: lib/send-message.js</title>
+    <title>JSDoc: Source: initializers/index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: lib/send-message.js</h1>
+    <h1 class="page-title">Source: initializers/index.js</h1>
 
     
 
@@ -28,22 +28,25 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-/**
- * A module for sending messages to clients
- * @module sendMessage
- */
-
-module.exports = sendMessage;
+const Bluebird       = require('bluebird');
+const configureRedis = require('./configure-redis');
+const startObserver  = require('./start-observer');
 
 /**
- * Send a message to a client.
+ * Initializes the application's dependencies before it starts
  *
- * @param {ws.Client} client The client to send the message to
- * @param {Object} message A JSON-serializable message to send to the client
+ * @module Initializers
  */
-function sendMessage(client, message) {
-  message = JSON.stringify(message);
-  client.send(message);
+
+module.exports = { start: start };
+
+/**
+ * Start the Initializers.
+ *
+ * @return {Promise} A promise resolved when all initializers are started
+ */
+function start() {
+  return Bluebird.all([configureRedis(), startObserver()]);
 }
 </code></pre>
         </article>

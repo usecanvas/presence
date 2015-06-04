@@ -1,18 +1,21 @@
 {
   "name": "longhouse",
-  "description": "Simple server for establishing and sharing user presence",
+  "description": "A service for establishing and sharing user presence",
   "version": "2.0.0",
   "author": "Jonathan Clem",
   "bugs": {
     "url": "https://github.com/usecanvas/longhouse/issues"
   },
   "dependencies": {
+    "bluebird": "^2.9.27",
     "hiredis": "^0.4.0",
     "koa": "^0.21.0",
+    "lodash": "^3.9.3",
     "logfmt": "^1.2.0",
+    "node-uuid": "^1.4.3",
     "redis": "^0.12.1",
     "teamster": "^1.2.0",
-    "validator": "^3.40.0",
+    "url-parse": "^1.0.1",
     "ws": "^0.7.2"
   },
   "devDependencies": {
@@ -38,8 +41,8 @@
     "url": "git+https://github.com/usecanvas/longhouse.git"
   },
   "scripts": {
-    "docs": "jsdoc lib . -c .jsdocrc",
     "dev": "nf run -- nodemon --harmony_arrow_functions",
+    "docs": "jsdoc lib initializers . -c .jsdocrc",
     "start": "node --harmony_arrow_functions index.js",
     "test": "node --harmony_arrow_functions node_modules/.bin/_mocha \"test/**/*-test.js\""
   }

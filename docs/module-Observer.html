@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: clientExpirer</title>
+    <title>JSDoc: Module: Observer</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: clientExpirer</h1>
+    <h1 class="page-title">Module: Observer</h1>
 
     
 
@@ -38,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Responsible for checking for and expiring expired clients.</p></div>
+            <div class="description"><p>Observes Redis keyspace events and notifies clients of updates</p></div>
         
 
         
@@ -87,7 +87,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-expirer.js.html">lib/client-expirer.js</a>, <a href="lib_client-expirer.js.html#line12">line 12</a>
+        <a href="lib_observer.js.html">lib/observer.js</a>, <a href="lib_observer.js.html#line9">line 9</a>
     </li></ul></dd>
     
 
@@ -137,14 +137,14 @@
 
     
 
-    <h4 class="name" id="~addClientToPool"><span class="type-signature">(private, inner) </span>addClientToPool<span class="signature">(client)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~expireClient"><span class="type-signature">(private, inner) </span>expireClient<span class="signature">(client)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Add a client to the client pool</p>
+    <p>Handle an expired client.</p>
 </div>
 
 
@@ -186,7 +186,7 @@
             <td class="type">
             
                 
-<span class="param-type">ws.WebSocket</span>
+<span class="param-type">Client</span>
 
 
             
@@ -196,7 +196,7 @@
 
             
 
-            <td class="description last"><p>The client to add to the pool</p></td>
+            <td class="description last"><p>The expired client</p></td>
         </tr>
 
     
@@ -237,7 +237,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-expirer.js.html">lib/client-expirer.js</a>, <a href="lib_client-expirer.js.html#line30">line 30</a>
+        <a href="lib_observer.js.html">lib/observer.js</a>, <a href="lib_observer.js.html#line64">line 64</a>
     </li></ul></dd>
     
 
@@ -268,99 +268,14 @@
 
     
 
-    <h4 class="name" id="~clearClientPool"><span class="type-signature">(private, inner) </span>clearClientPool<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~handleMessage"><span class="type-signature">(private, inner) </span>handleMessage<span class="signature">(_pattern, channel, message)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Completely clear the client pool.</p>
-<p>This is only for tests, where the pool must be cleared after each test.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-expirer.js.html">lib/client-expirer.js</a>, <a href="lib_client-expirer.js.html#line42">line 42</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="~expireExpiredClient"><span class="type-signature">(private, inner) </span>expireExpiredClient<span class="signature">(client)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Check whether a client's presence has expired, expire them if so.</p>
-<p>If presence has expired, we delete their presence key from Redis and publish
-an expire event to their most recently joined channel.</p>
+    <p>Handle a message received by the event subscriber.</p>
 </div>
 
 
@@ -396,13 +311,13 @@ an expire event to their most recently joined channel.</p>
 
         <tr>
             
-                <td class="name"><code>client</code></td>
+                <td class="name"><code>_pattern</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">ws.WebSocket</span>
+<span class="param-type">string</span>
 
 
             
@@ -412,7 +327,53 @@ an expire event to their most recently joined channel.</p>
 
             
 
-            <td class="description last"><p>The client being inspected for expiration</p></td>
+            <td class="description last"><p>The pattern the message matches</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>channel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The channel the message came over</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The message that was received</p></td>
         </tr>
 
     
@@ -453,7 +414,7 @@ an expire event to their most recently joined channel.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-expirer.js.html">lib/client-expirer.js</a>, <a href="lib_client-expirer.js.html#line89">line 89</a>
+        <a href="lib_observer.js.html">lib/observer.js</a>, <a href="lib_observer.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -484,96 +445,14 @@ an expire event to their most recently joined channel.</p>
 
     
 
-    <h4 class="name" id="~expireExpiredClients"><span class="type-signature">(private, inner) </span>expireExpiredClients<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~publishEvent"><span class="type-signature">(private, inner) </span>publishEvent<span class="signature">(eventName, spaceID, identity)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Call the expirer on each client, expiring them if need be.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-expirer.js.html">lib/client-expirer.js</a>, <a href="lib_client-expirer.js.html#line76">line 76</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="~removeClientFromPool"><span class="type-signature">(private, inner) </span>removeClientFromPool<span class="signature">(client)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Remove a client from the client pool</p>
+    <p>Publish an event to all clients connected to a space.</p>
 </div>
 
 
@@ -609,13 +488,13 @@ an expire event to their most recently joined channel.</p>
 
         <tr>
             
-                <td class="name"><code>client</code></td>
+                <td class="name"><code>eventName</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">ws.WebSocket</span>
+<span class="param-type">string</span>
 
 
             
@@ -625,7 +504,53 @@ an expire event to their most recently joined channel.</p>
 
             
 
-            <td class="description last"><p>The client to remove from the pool</p></td>
+            <td class="description last"><p>The name of the event</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>spaceID</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ID of the space to publish to</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>identity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The identity of the subject client</p></td>
         </tr>
 
     
@@ -666,7 +591,7 @@ an expire event to their most recently joined channel.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-expirer.js.html">lib/client-expirer.js</a>, <a href="lib_client-expirer.js.html#line52">line 52</a>
+        <a href="lib_observer.js.html">lib/observer.js</a>, <a href="lib_observer.js.html#line78">line 78</a>
     </li></ul></dd>
     
 
@@ -697,14 +622,14 @@ an expire event to their most recently joined channel.</p>
 
     
 
-    <h4 class="name" id="~startClientExpirationChecker"><span class="type-signature">(private, inner) </span>startClientExpirationChecker<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~start"><span class="type-signature">(inner) </span>start<span class="signature">()</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>On an interval, check for expired clients and expire them.</p>
+    <p>Start the subscription and observance of keyspace events.</p>
 </div>
 
 
@@ -748,7 +673,7 @@ an expire event to their most recently joined channel.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-expirer.js.html">lib/client-expirer.js</a>, <a href="lib_client-expirer.js.html#line67">line 67</a>
+        <a href="lib_observer.js.html">lib/observer.js</a>, <a href="lib_observer.js.html#line22">line 22</a>
     </li></ul></dd>
     
 
@@ -771,6 +696,28 @@ an expire event to their most recently joined channel.</p>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A promise resolved when the subscription starts</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 

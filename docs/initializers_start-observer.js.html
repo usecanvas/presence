@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: lib/send-message.js</title>
+    <title>JSDoc: Source: initializers/start-observer.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: lib/send-message.js</h1>
+    <h1 class="page-title">Source: initializers/start-observer.js</h1>
 
     
 
@@ -28,22 +28,17 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-/**
- * A module for sending messages to clients
- * @module sendMessage
- */
+const Observer = require('../lib/observer');
 
-module.exports = sendMessage;
+module.exports = startObserver;
 
 /**
- * Send a message to a client.
+ * An initializer that will start the Observer module
  *
- * @param {ws.Client} client The client to send the message to
- * @param {Object} message A JSON-serializable message to send to the client
+ * @return {Promise} A promise resolved when the observer is started
  */
-function sendMessage(client, message) {
-  message = JSON.stringify(message);
-  client.send(message);
+function startObserver() {
+  return Observer.start();
 }
 </code></pre>
         </article>

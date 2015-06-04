@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: lib/send-message.js</title>
+    <title>JSDoc: Source: lib/client-messager.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: lib/send-message.js</h1>
+    <h1 class="page-title">Source: lib/client-messager.js</h1>
 
     
 
@@ -29,21 +29,35 @@
             <pre class="prettyprint source linenums"><code>'use strict';
 
 /**
- * A module for sending messages to clients
- * @module sendMessage
+ * Sends messages to Clients.
+ *
+ * @module ClientMessager
  */
 
-module.exports = sendMessage;
+module.exports = {
+  send: send,
+  error: error,
+};
 
 /**
- * Send a message to a client.
+ * Send a message to a Client.
  *
- * @param {ws.Client} client The client to send the message to
- * @param {Object} message A JSON-serializable message to send to the client
+ * @param {Client} client The client to send the message to
+ * @param {object} message The message to send, JSON-serialized, to the client
  */
-function sendMessage(client, message) {
+function send(client, message) {
   message = JSON.stringify(message);
-  client.send(message);
+  client.socket.send(message);
+}
+
+/**
+ * Send an error message to a Client.
+ *
+ * @param {Client} client The client to send the error to
+ * @param {Error} err The error to send to the client
+ */
+function error(client, err) {
+  send(client, { error: err });
 }
 </code></pre>
         </article>

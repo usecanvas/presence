@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: sendMessage</title>
+    <title>JSDoc: Module: Logger</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: sendMessage</h1>
+    <h1 class="page-title">Module: Logger</h1>
 
     
 
@@ -38,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>A module for sending messages to clients</p></div>
+            <div class="description"><p>Logs messages to the console in the Logfmt style</p></div>
         
 
         
@@ -87,7 +87,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_send-message.js.html">lib/send-message.js</a>, <a href="lib_send-message.js.html#line3">line 3</a>
+        <a href="lib_logger.js.html">lib/logger.js</a>, <a href="lib_logger.js.html#line6">line 6</a>
     </li></ul></dd>
     
 
@@ -137,14 +137,14 @@
 
     
 
-    <h4 class="name" id="~sendMessage"><span class="type-signature">(inner) </span>sendMessage<span class="signature">(client, message)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~error"><span class="type-signature">(inner) </span>error<span class="signature">(err)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Send a message to a client.</p>
+    <p>Log an error to the console in the Logfmt style.</p>
 </div>
 
 
@@ -180,13 +180,13 @@
 
         <tr>
             
-                <td class="name"><code>client</code></td>
+                <td class="name"><code>err</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">ws.Client</span>
+<span class="param-type">Error</span>
 
 
             
@@ -196,30 +196,7 @@
 
             
 
-            <td class="description last"><p>The client to send the message to</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>message</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>A JSON-serializable message to send to the client</p></td>
+            <td class="description last"><p>The error to be logged</p></td>
         </tr>
 
     
@@ -260,7 +237,138 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_send-message.js.html">lib/send-message.js</a>, <a href="lib_send-message.js.html#line16">line 16</a>
+        <a href="lib_logger.js.html">lib/logger.js</a>, <a href="lib_logger.js.html#line32">line 32</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~log"><span class="type-signature">(inner) </span>log<span class="signature">(message)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Log a message to the console in the Logfmt style.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The message to be logged</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_logger.js.html">lib/logger.js</a>, <a href="lib_logger.js.html#line22">line 22</a>
     </li></ul></dd>
     
 

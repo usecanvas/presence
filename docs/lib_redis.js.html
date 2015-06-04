@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: lib/send-message.js</title>
+    <title>JSDoc: Source: lib/redis.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: lib/send-message.js</h1>
+    <h1 class="page-title">Source: lib/redis.js</h1>
 
     
 
@@ -28,22 +28,33 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-/**
- * A module for sending messages to clients
- * @module sendMessage
- */
-
-module.exports = sendMessage;
+const Bluebird = require('bluebird');
+const RedisLib = Bluebird.promisifyAll(require('redis'));
+const URL      = require('url');
 
 /**
- * Send a message to a client.
+ * Makes requests to a Redis instance
  *
- * @param {ws.Client} client The client to send the message to
- * @param {Object} message A JSON-serializable message to send to the client
+ * This module is itself a Redis client, with an added `createClient` method for
+ * creating further Redis clients.
+ *
+ * @module Redis
  */
-function sendMessage(client, message) {
-  message = JSON.stringify(message);
-  client.send(message);
+module.exports = createClient();
+
+/**
+ * Create a Redis client.
+ *
+ * @return {RedisLib.Client}
+ */
+function createClient() {
+  const redisURL = URL.parse(process.env.REDIS_URL);
+  const password = redisURL.auth ? redisURL.auth.split(':')[1] : null;
+  const client   = RedisLib.createClient(redisURL.port, redisURL.hostname,
+    { auth_pass: password });
+
+  client.createClient = createClient;
+  return client;
 }
 </code></pre>
         </article>
