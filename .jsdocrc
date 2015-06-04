@@ -1,0 +1,8 @@
+{
+  "plugins": ["plugins/markdown"],
+  "opts": {
+    "destination": "docs",
+    "private": true,
+    "readme": "README.md"
+  }
+}

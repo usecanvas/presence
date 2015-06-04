@@ -1,0 +1,26 @@
+{
+  "name": "longhouse",
+  "description": "A service for tracking user presence in a space",
+  "version": "1.0.0",
+  "author": "Jonathan Clem",
+  "bugs": {
+    "url": "https://github.com/usecanvas/longhouse/issues"
+  },
+  "engines": {
+    "iojs": "2.2.1"
+  },
+  "homepage": "https://github.com/usecanvas/longhouse#readme",
+  "keywords": [
+    "presence",
+    "realtime"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usecanvas/longhouse.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
