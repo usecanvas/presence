@@ -46,19 +46,20 @@
         <article><h1>Longhouse <a href="https://circleci.com/gh/usecanvas/longhouse"><img src="https://circleci.com/gh/usecanvas/longhouse.svg?style=svg&amp;circle-token=e95e3468f9e06bfea17fa9321426ef52dd3bca8e" alt="Circle CI"></a></h1><p>A user presence service.</p>
 <h2>Prerequisites</h2><ul>
 <li>nvm</li>
+<li>Redis v3.0.2</li>
 </ul>
-<h2>Install</h2><pre class="prettyprint source lang-sh"><code>git clone git@github.com:usecanvas/longhouse.git
+<h2>Install</h2><pre class="prettyprint source lang-sh"><code># Assumes Redis is already running locally on port 6379
+git clone git@github.com:usecanvas/longhouse.git
 cd longhouse
 nvm install
 nvm use
-npm install
-echo &quot;REDIS_URL=redis://localhost:6379&quot; > .env
-echo &quot;PRESENCE_TTL=30000&quot; >> .env
+npm run bootstrap
 npm run dev</code></pre><h2>Use</h2><p>Longhouse tracks user presence as soon as they connect. To connect to space in
 Longhouse, open a WebSocket connection to a URL like:</p>
 <pre class="prettyprint source"><code>wss://longhouse.example.com/space_uuid?identity=email@example.com</code></pre><p>After joining, the client will quickly receive a message with the current
 clients connected to the space:</p>
 <pre class="prettyprint source lang-json"><code>{
+  &quot;id&quot;: &quot;123&quot;,
   &quot;clients&quot;: [
     { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;email@example.com&quot;, &quot;spaceID&quot;: &quot;space_uuid&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:26.480Z&quot; },
     { &quot;id&quot;: &quot;456&quot;, &quot;identity&quot;: &quot;user2@example.com&quot;, &quot;spaceID&quot;: &quot;space_uuid&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:28.493Z&quot; }

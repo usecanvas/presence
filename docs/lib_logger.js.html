@@ -39,6 +39,7 @@ const merge  = require('lodash').merge;
 
 module.exports = {
   log: log,
+  clientLog: clientLog,
   error: error,
 };
 
@@ -54,6 +55,21 @@ function log(message) {
   const now = new Date().toISOString();
   Logfmt.log(merge({ time: now }, message));
 }
+
+/**
+ * Log a message along with client metadata.
+ *
+ * @static
+ * @example &lt;caption>Logging a message with client metadata&lt;/caption>
+ * Logger.clientLog(client, { hello: 'world' });
+ * @param {Client} client The client whose metadata should be logged
+ * @param {object} message The message to be logged
+ */
+ function clientLog(client, message) {
+   const clientMeta = { client_id: client.id, request_id: client.requestID };
+   message = merge(clientMeta, message);
+   log(message);
+ }
 
 /**
  * Log an error to the console in the Logfmt style.

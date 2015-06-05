@@ -19,7 +19,7 @@ describe('ClientRegister', () => {
 
   describe('#registerClient', () => {
     it('persists the client to Redis', () => {
-      return ClientRegister.registerClient('clientID', socket).then(client => {
+      return ClientRegister.registerClient(socket).then(client => {
         return Redis.getAsync(Client.getPresenceKey(client));
       }).then(value => {
         value.should.eql('test');
@@ -29,7 +29,7 @@ describe('ClientRegister', () => {
     it('sets a TTL on the presence', () => {
       let client;
 
-      return ClientRegister.registerClient('clientID', socket).then(_client => {
+      return ClientRegister.registerClient(socket).then(_client => {
         client = _client;
         return Bluebird.delay(TTL);
       }).then(() => {
@@ -40,14 +40,15 @@ describe('ClientRegister', () => {
     });
 
     it('adds the client to the client pool', () => {
-      return ClientRegister.registerClient('clientID', socket).then(client => {
+      return ClientRegister.registerClient(socket).then(client => {
         ClientRegister.getClient(client.id).should.eql(client);
       });
     });
 
     it('sends the client the current members list', () => {
-      return ClientRegister.registerClient('clientID', socket).then(client => {
+      return ClientRegister.registerClient(socket).then(client => {
         client.socket.inbox.should.eql([JSON.stringify({
+          id     : client.id,
           clients: [Client.serialize(client)]
         })]);
       });
@@ -58,7 +59,7 @@ describe('ClientRegister', () => {
     it('updates the client expiration', () => {
       let client;
 
-      return ClientRegister.registerClient('clientID', socket).then(_client => {
+      return ClientRegister.registerClient(socket).then(_client => {
         client = _client;
         return Bluebird.delay(TTL * 0.75);
       }).then(() => {
@@ -75,7 +76,7 @@ describe('ClientRegister', () => {
 
   describe('#deregisterClient', () => {
     it('deletes the client presence key', () => {
-      return ClientRegister.registerClient('clientID', socket).then(client => {
+      return ClientRegister.registerClient(socket).then(client => {
         return ClientRegister.deregisterClient(client);
       }).then(client => {
         return Redis.getAsync(Client.getPresenceKey(client));
@@ -85,7 +86,7 @@ describe('ClientRegister', () => {
     });
 
     it('removes the client from the pool', () => {
-      return ClientRegister.registerClient('clientID', socket).then(client => {
+      return ClientRegister.registerClient(socket).then(client => {
         return ClientRegister.deregisterClient(client);
       }).then(client => {
         should.equal(ClientRegister.getClient(client.id), undefined);

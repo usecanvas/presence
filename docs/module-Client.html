@@ -87,7 +87,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line7">line 7</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line8">line 8</a>
     </li></ul></dd>
     
 
@@ -187,7 +187,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line13">line 13</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -214,7 +214,7 @@
 
     
 
-    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(clientID, socket)</span><span class="type-signature"> &rarr; {Promise.&lt;Client>}</span></h4>
+    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(socket)</span><span class="type-signature"> &rarr; {Promise.&lt;Client>}</span></h4>
 
     
 
@@ -253,29 +253,6 @@
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>clientID</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The UUID for the new client</p></td>
-        </tr>
-
     
 
         <tr>
@@ -337,7 +314,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line58">line 58</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line59">line 59</a>
     </li></ul></dd>
     
 
@@ -388,7 +365,7 @@
     
         <p class="code-caption">Creating a new Client</p>
     
-    <pre class="prettyprint"><code>Client.create('123', webSocket).then(client => console.log(client));</code></pre>
+    <pre class="prettyprint"><code>Client.create(webSocket).then(client => console.log(client));</code></pre>
 
 
 
@@ -497,7 +474,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line114">line 114</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line118">line 118</a>
     </li></ul></dd>
     
 
@@ -658,7 +635,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line92">line 92</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line96">line 96</a>
     </li></ul></dd>
     
 
@@ -819,7 +796,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line134">line 134</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line138">line 138</a>
     </li></ul></dd>
     
 
@@ -900,6 +877,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -925,10 +904,47 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>The UUID identifying this client</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>requestID</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                    &lt;nullable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ID of the request this client connected with</p></td>
         </tr>
 
     
@@ -947,6 +963,12 @@
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+                </td>
             
 
             
@@ -971,6 +993,12 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+                </td>
+            
 
             
 
@@ -994,6 +1022,12 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+                </td>
+            
 
             
 
@@ -1016,6 +1050,12 @@
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+                </td>
             
 
             
@@ -1059,7 +1099,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line27">line 27</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line28">line 28</a>
     </li></ul></dd>
     
 
@@ -1133,7 +1173,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line38">line 38</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line40">line 40</a>
     </li></ul></dd>
     
 

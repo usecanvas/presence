@@ -6,7 +6,6 @@ const HTTP           = require('http');
 const Initializers   = require('./initializers');
 const Logger         = require('./lib/logger');
 const Teamster       = require('teamster');
-const UUID           = require('node-uuid');
 const WSServer       = require('ws').Server;
 const app            = require('koa')();
 
@@ -68,15 +67,15 @@ function startWSServer(httpServer) {
  * @param {WS.WebSocket} socket The new WebSocket connection
  */
 function onConnection(socket) {
-  const clientID = socket.upgradeReq.headers['x-request-id'] || UUID.v4();
+  const requestID = socket.upgradeReq.headers['x-request-id'];
 
-  ClientRegister.registerClient(clientID, socket).then(client => {
-    Logger.log({ id: client.id, event: 'New WebSocket client connected' });
+  ClientRegister.registerClient(socket).then(client => {
+    Logger.clientLog(client, { event: 'New WebSocket client connected' });
     client.socket.on('close', () => onClose(client));
     client.socket.on('message', message => onMessage(client, message));
   }).catch(err => {
     ClientMessager.error({ socket: socket }, 'Error when joining new client');
-    Logger.log({ id: clientID, event: 'Could not create new client' });
+    Logger.log({ request_id: requestID, event: 'Could not create new client' });
     Logger.error(err);
     socket.close();
   });
@@ -100,13 +99,13 @@ function onMessage(client, message) {
 
   if (message.action !== 'ping') {
     const err = `Unrecognized action sent: ${message.action}`;
-    Logger.log({ id: client.id, event: err });
+    Logger.clientLog(client, { event: err });
     ClientMessager.error(client, err);
     return;
   }
 
   ClientRegister.renewClient(client).then(() => {
-    Logger.log({ id: client.id, event: 'Presence renewed' });
+    Logger.clientLog(client, { event: 'Presence renewed' });
   });
 }
 
@@ -117,7 +116,7 @@ function onMessage(client, message) {
  * @param {Client} client The client whose socket has closed.
  */
 function onClose(client) {
-  Logger.log({ id: client.id, event: 'Client closed socket connection' });
+  Logger.clientLog(client, { event: 'Client closed socket connection' });
   ClientRegister.deregisterClient(client);
 }
 

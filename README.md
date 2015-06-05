@@ -33,6 +33,7 @@ clients connected to the space:
 
 ```json
 {
+  "id": "123",
   "clients": [
     { "id": "123", "identity": "email@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:26.480Z" },
     { "id": "456", "identity": "user2@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:28.493Z" }
