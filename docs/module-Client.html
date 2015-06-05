@@ -87,7 +87,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line8">line 8</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line7">line 7</a>
     </li></ul></dd>
     
 
@@ -128,6 +128,83 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~KEY_SPLITTER"><span class="type-signature">(inner) </span>KEY_SPLITTER<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    <p>The value used to separate client information
+  in a PresenceKey</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -137,7 +214,7 @@
 
     
 
-    <h4 class="name" id="~create"><span class="type-signature">(inner) </span>create<span class="signature">(clientID, socket)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(clientID, socket)</span><span class="type-signature"> &rarr; {Promise.&lt;Client>}</span></h4>
 
     
 
@@ -260,7 +337,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line50">line 50</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line58">line 58</a>
     </li></ul></dd>
     
 
@@ -298,7 +375,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type">Promise.&lt;Client></span>
 
 
     </dd>
@@ -307,13 +384,20 @@
     
 
 
+    <h5>Example</h5>
+    
+        <p class="code-caption">Creating a new Client</p>
+    
+    <pre class="prettyprint"><code>Client.create('123', webSocket).then(client => console.log(client));</code></pre>
+
+
 
         
             
 
     
 
-    <h4 class="name" id="~getPresenceKey"><span class="type-signature">(inner) </span>getPresenceKey<span class="signature">(client)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id=".getPresenceKey"><span class="type-signature">(static) </span>getPresenceKey<span class="signature">(client)</span><span class="type-signature"> &rarr; {string}</span></h4>
 
     
 
@@ -413,7 +497,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line98">line 98</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line114">line 114</a>
     </li></ul></dd>
     
 
@@ -460,13 +544,21 @@
     
 
 
+    <h5>Example</h5>
+    
+        <p class="code-caption">Getting a Redis presence key for a client</p>
+    
+    <pre class="prettyprint"><code>Client.getPresenceKey(client);
+// 'longhouse/spaces/spaceID/clientId/clientIdentity/2015-06-05T20:51:47.411Z'</code></pre>
+
+
 
         
             
 
     
 
-    <h4 class="name" id="~parsePresenceKey"><span class="type-signature">(inner) </span>parsePresenceKey<span class="signature">(presenceKey)</span><span class="type-signature"> &rarr; {Client}</span></h4>
+    <h4 class="name" id=".parsePresenceKey"><span class="type-signature">(static) </span>parsePresenceKey<span class="signature">(presenceKey)</span><span class="type-signature"> &rarr; {Client}</span></h4>
 
     
 
@@ -566,7 +658,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line80">line 80</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line92">line 92</a>
     </li></ul></dd>
     
 
@@ -613,13 +705,21 @@
     
 
 
+    <h5>Example</h5>
+    
+        <p class="code-caption">Parsing a presence key</p>
+    
+    <pre class="prettyprint"><code>Client.parsePresenceKey('longhouse/spaces/spaceID/clientId/clientIdentity/2015-06-05T20:51:47.411Z');
+// { id: 'clientID', identity: 'clientIdentity', spaceID: 'spaceID', joinedAt: '2015-06-05T20:51:47.411Z' }</code></pre>
+
+
 
         
             
 
     
 
-    <h4 class="name" id="~serialize"><span class="type-signature">(inner) </span>serialize<span class="signature">(client)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".serialize"><span class="type-signature">(static) </span>serialize<span class="signature">(client)</span><span class="type-signature"></span></h4>
 
     
 
@@ -719,7 +819,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line114">line 114</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line134">line 134</a>
     </li></ul></dd>
     
 
@@ -744,6 +844,14 @@
 
 
 
+    <h5>Example</h5>
+    
+        <p class="code-caption">Serializing a client</p>
+    
+    <pre class="prettyprint"><code>Client.serialize(client);
+// { id: 'clientID', identity: 'clientIdentity', joinedAt: '2015-06-05T20:51:47.411Z' }</code></pre>
+
+
 
         
     
@@ -763,6 +871,16 @@
 </div>
 
 
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
 
 
 
@@ -941,7 +1059,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line22">line 22</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line27">line 27</a>
     </li></ul></dd>
     
 
@@ -967,10 +1085,20 @@
 <div class="description">
     <p>A key containing information about a connected client</p>
 <p>The client information is all in the key, split by forward slashes:</p>
-<p>longhouse/spaces/${spaceID}/${id}/${identity}/${joinedAt}</p>
+<pre class="prettyprint source"><code>longhouse/spaces/${spaceID}/${id}/${identity}/${joinedAt}</code></pre>
 </div>
 
 
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
 
 
 
@@ -1005,7 +1133,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line33">line 33</a>
+        <a href="lib_client.js.html">lib/client.js</a>, <a href="lib_client.js.html#line38">line 38</a>
     </li></ul></dd>
     
 

@@ -15,6 +15,7 @@ module.exports = { start: start };
 /**
  * Start the Initializers.
  *
+ * @static
  * @return {Promise} A promise resolved when all initializers are started
  */
 function start() {

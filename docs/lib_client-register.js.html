@@ -54,14 +54,17 @@ module.exports = {
 
 /**
  * @private
- * @property {object} clients An object containing all clients currently
- *   connected
+ * @member {object} clients An object containing all clients currently connected
  */
 const clients = {};
 
 /**
- * Return the list of Clients in a space.
+ * Return the list of Clients in a space *in the current process*.
  *
+ * @static
+ * @example &lt;caption>Listing the clients in a space&lt;/caption>
+ * ClientRegister.clientsInSpace(spaceID);
+ * // [{ id: 'clientID' }] etc...
  * @param {string} spaceID The space ID to get clients for
  * @return {Client[]} The clients in the given space
  */
@@ -72,8 +75,12 @@ function clientsInSpace(spaceID) {
 /**
  * Deregister a client, and remove their persisted presence.
  *
+ * @static
+ * @example &lt;caption>Deregistering a client&lt;/caption>
+ * ClientRegister.deregisterClient(client).then(client => console.log(client));
  * @param {Client} client The client to deregister
- * @return {Promise} A promise resolving with the client after deregistration
+ * @return {Promise.&lt;Client>} A promise resolving with the client after
+ *   deregistration
  */
 function deregisterClient(client) {
   const presenceKey = Client.getPresenceKey(client);
@@ -82,8 +89,11 @@ function deregisterClient(client) {
 }
 
 /**
- * Get a client by ID.
+ * Get a client by ID *from the current process's client pool*.
  *
+ * @static
+ * @example &lt;caption>Getting a client&lt;/caption>
+ * Client.getClient('clientID');
  * @param {string} clientID The ID of the client to fetch
  * @return {Client}
  */
@@ -95,9 +105,13 @@ function getClient(clientID) {
  * Register a new client with a given client ID, and send them a list of the
  * currently joined members in their space.
  *
+ * @static
+ * @example &lt;caption>Registering a client&lt;/caption>
+ * ClientRegister.registerClient('clientID', webSocket).then(client => console.log(client));
  * @param {string} clientID The UUID for the new client
  * @param {WS.WebSocket} socket The socket that the new client is connected on
- * @return {Promise} A promise resolved with the newly-registered Client
+ * @return {Promise.&lt;Client>} A promise resolved with the newly-registered
+ *   Client
  */
 function registerClient(clientID, socket) {
   if (clients[clientID]) {
@@ -126,11 +140,46 @@ function registerClient(clientID, socket) {
 /**
  * Renew a client's presence.
  *
+ * @static
+ * @example &lt;caption>Renewing a client's presence lease&lt;/caption>
+ * ClientRegister.renewClient(client).then(client => console.log(client));
  * @param {Client} client The client to renew presence for
- * @return {Promise} A promise resolving with the client after presence renewed
+ * @return {Promise.&lt;Client>} A promise resolving with the client after presence
+ *   renewed
  */
 function renewClient(client) {
-  return setClientExpiration(client);
+  return setClientExpiration(client).return(client);
+}
+
+/**
+ * Forcibly remove all clients from the registry (but do not remove them from
+ * Redis).
+ *
+ * @static
+ */
+function removeAllClients() {
+  for (let key in clients) {
+    delete clients[key];
+  }
+}
+
+/**
+ * Remove all client presence keys, since the server is shutting down.
+ *
+ * @static
+ * @return {Promise} A promise resolved when the keys have been removed
+ */
+function terminate() {
+  const allClients = objectValues(clients);
+  const keys       = allClients.map(Client.getPresenceKey);
+
+  Logger.log({ event: 'Terminating all clients' });
+
+  if (keys.length) {
+    return Redis.delAsync(keys);
+  } else {
+    return Bluebird.resolve();
+  }
 }
 
 /**
@@ -149,21 +198,12 @@ function getNSKeyPattern(spaceID) {
  *
  * @private
  * @param {Client} client The client to persist presence for
- * @return {Promise} A promise resolving with the client after persistence
+ * @return {Promise.&lt;Client>} A promise resolving with the client after
+ *   persistence
  */
 function persistClientPresence(client) {
   const presenceKey = Client.getPresenceKey(client);
-  return Redis.setAsync(presenceKey, client.identity);
-}
-
-/**
- * Forcibly remove all clients from the registry (but do not remove them from
- * Redis).
- */
-function removeAllClients() {
-  for (let key in clients) {
-    delete clients[key];
-  }
+  return Redis.setAsync(presenceKey, client.identity).return(client);
 }
 
 /**
@@ -171,30 +211,12 @@ function removeAllClients() {
  *
  * @private
  * @param {Client} client The client to set expiration for
- * @return {Promise} A promise resolving when the expiration is set
+ * @return {Promise.&lt;Client>} A promise resolving when the expiration is set
  */
 function setClientExpiration(client) {
   const presenceKey = Client.getPresenceKey(client);
   return Redis.pexpireAsync(presenceKey,
-    parseInt(process.env.PRESENCE_TTL, 10) || 60000);
-}
-
-/**
- * Remove all client presence keys, since the server is shutting down.
- *
- * @return {Promise} A promise resolved when the keys have been removed
- */
-function terminate() {
-  const allClients = objectValues(clients);
-  const keys       = allClients.map(Client.getPresenceKey);
-
-  Logger.log({ event: 'Terminating all clients' });
-
-  if (keys.length) {
-    return Redis.delAsync(keys);
-  } else {
-    return Bluebird.resolve();
-  }
+    parseInt(process.env.PRESENCE_TTL, 10) || 60000).return(client);
 }
 </code></pre>
         </article>

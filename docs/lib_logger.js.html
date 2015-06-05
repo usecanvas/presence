@@ -45,6 +45,9 @@ module.exports = {
 /**
  * Log a message to the console in the Logfmt style.
  *
+ * @static
+ * @example &lt;caption>Logging a message&lt;/caption>
+ * Logger.log({ hello: 'world' });
  * @param {object} message The message to be logged
  */
 function log(message) {
@@ -55,6 +58,9 @@ function log(message) {
 /**
  * Log an error to the console in the Logfmt style.
  *
+ * @static
+ * @example &lt;caption>Logging an error&lt;/caption>
+ * Logger.error(new Error('Failure'));
  * @param {Error} err The error to be logged
  */
 function error(err) {

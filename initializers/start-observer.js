@@ -7,7 +7,8 @@ module.exports = startObserver;
 /**
  * An initializer that will start the Observer module
  *
- * @return {Promise} A promise resolved when the observer is started
+ * @static
+ * @return {Promise.<string>} A promise resolved when the observer is started
  */
 function startObserver() {
   return Observer.start();

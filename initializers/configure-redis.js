@@ -7,7 +7,8 @@ module.exports = configureRedis;
 /**
  * An initializer that will configure Redis's keyspace notifications
  *
- * @return {Promise} A promise resolved after configuration
+ * @static
+ * @return {Promise.<string>} A promise resolved after configuration
  */
 function configureRedis() {
   return Redis.configAsync('get', 'notify-keyspace-events').then(config => {
