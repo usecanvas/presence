@@ -41,6 +41,18 @@ clients connected to the space:
 }
 ```
 
+## Reconnecting
+
+In the event of a disconnection by Longhouse, a client can attempt to reconnect
+with a former "id". This ensures that as long as their old presence lease has
+not expired, they will not appear to have left and re-joined the room.
+
+This is useful in handling sudden process restarts.
+
+```
+wss://longhouse.example.com/space_uuid?identity=email@example.com&id=123
+```
+
 ### Actions
 
 #### `ping`
