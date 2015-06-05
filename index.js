@@ -17,11 +17,8 @@ const app            = require('koa')();
  */
 
 Initializers.start()
-  .then(() => {
-    createTeamster();
-    process.once('SIGINT', onInt);
-    process.once('SIGTERM', onTerm);
-  }).catch(err => { throw err; });
+  .then(createTeamster)
+  .catch(err => { throw err; });
 
 /**
  * Start 1 or more web processes running our app.
@@ -118,28 +115,4 @@ function onMessage(client, message) {
 function onClose(client) {
   Logger.clientLog(client, { event: 'Client closed socket connection' });
   ClientRegister.deregisterClient(client);
-}
-
-/**
- * Handle a 'SIGINT', where all clients must be removed.
- *
- * @private
- */
-function onInt() {
-  onTerm().then(() => {
-    process.kill(process.pid, 'SIGINT');
-  });
-}
-
-/**
- * Handle a 'SIGTERM', where all clients must be removed.
- *
- * @private
- * @return {Promise} A promise resolved after termination and a new SIGTERM has
- *   been sent
- */
-function onTerm() {
-  return ClientRegister.terminate().then(() => {
-    process.kill(process.pid, 'SIGTERM');
-  });
 }
