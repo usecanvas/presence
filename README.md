@@ -5,10 +5,12 @@ A user presence service.
 ## Prerequisites
 
 - nvm
+- Redis v3.0.2
 
 ## Install
 
 ```sh
+# Assumes Redis is already running locally on port 6379
 git clone git@github.com:usecanvas/longhouse.git
 cd longhouse
 nvm install
