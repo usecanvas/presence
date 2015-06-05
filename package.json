@@ -23,7 +23,6 @@
     "foreman": "^1.3.0",
     "jsdoc": "^3.3.0",
     "mocha": "^2.2.5",
-    "node-uuid": "^1.4.3",
     "nodemon": "^1.3.7"
   },
   "engines": {
@@ -41,6 +40,7 @@
     "url": "git+https://github.com/usecanvas/longhouse.git"
   },
   "scripts": {
+    "bootstrap": "bin/bootstrap",
     "dev": "nf run -- nodemon --harmony_arrow_functions",
     "docs": "jsdoc lib initializers . -c .jsdocrc",
     "start": "node --harmony_arrow_functions index.js",

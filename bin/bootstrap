@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+
+set -e
+
+cat <<EOF >> .env
+PORT=5002
+REDIS_URL=localhost:6379
+EOF
+
+npm install
