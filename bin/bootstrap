@@ -3,8 +3,8 @@
 set -e
 
 cat <<EOF >> .env
-PORT=5002
-REDIS_URL=localhost:6379
+PORT=5003
+REDIS_URL=redis://localhost:6379
 EOF
 
 npm install
