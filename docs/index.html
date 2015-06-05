@@ -43,7 +43,7 @@
 
 
     <section>
-        <article><h1>Longhouse</h1><p>A user presence service.</p>
+        <article><h1>Longhouse <a href="https://circleci.com/gh/usecanvas/longhouse"><img src="https://circleci.com/gh/usecanvas/longhouse.svg?style=svg&amp;circle-token=e95e3468f9e06bfea17fa9321426ef52dd3bca8e" alt="Circle CI"></a></h1><p>A user presence service.</p>
 <h2>Prerequisites</h2><ul>
 <li>nvm</li>
 </ul>
@@ -53,7 +53,7 @@ nvm install
 nvm use
 npm install
 echo &quot;REDIS_URL=redis://localhost:6379&quot; > .env
-echo &quot;PRESENCE_TTL=30000&quot; > .env
+echo &quot;PRESENCE_TTL=30000&quot; >> .env
 npm run dev</code></pre><h2>Use</h2><p>Longhouse tracks user presence as soon as they connect. To connect to space in
 Longhouse, open a WebSocket connection to a URL like:</p>
 <pre class="prettyprint source"><code>wss://longhouse.example.com/space_uuid?identity=email@example.com</code></pre><p>After joining, the client will quickly receive a message with the current
@@ -66,7 +66,7 @@ clients connected to the space:</p>
 }</code></pre><h3>Actions</h3><h4><code>ping</code></h4><p>Sending this action will renew the client's presence lease.</p>
 <p>This is currently the only action that should be sent to Longhouse. It needs to
 be sent less frequently than the value of <code>$PRESENCE_TTL</code> (in milliseconds).</p>
-<pre class="prettyprint source lang-json"><code>{&quot;action&quot;: &quot;ping&quot;}</code></pre><h3>Remove Events</h3><p>When relevant events happen on remote clients, Longhouse will send a message to
+<pre class="prettyprint source lang-json"><code>{&quot;action&quot;: &quot;ping&quot;}</code></pre><h3>Remote Events</h3><p>When relevant events happen on remote clients, Longhouse will send a message to
 each client connected to the space where the event occurred.</p>
 <h4><code>remote join</code></h4><p>A client has joined the space.</p>
 <pre class="prettyprint source lang-json"><code>{
@@ -100,12 +100,17 @@ server:</p>
 <pre class="prettyprint source lang-bash"><code># Terminal 1
 wscat -c ws://localhost:5000/space-id?identity=user@example.com
 >
-  &lt; {&quot;members&quot;:[&quot;user@example.com&quot;]}
+  &lt; {&quot;clients&quot;: [
+      { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;user@example.com&quot; }
+    ]
 
 # Terminal 2
 wscat -c ws://localhost:5000/space-id?identity=another-user@example.com
 >
-  &lt; {&quot;members&quot;:[&quot;another-user@example.com&quot;,&quot;user@example.com&quot;]}</code></pre></article>
+  &lt; {&quot;clients&quot;: [
+      { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;user@example.com&quot; },
+      { &quot;id&quot;: &quot;456&quot;, &quot;identity&quot;: &quot;another-user@example.com&quot; }
+    ]</code></pre></article>
     </section>
 
 
@@ -116,7 +121,7 @@ wscat -c ws://localhost:5000/space-id?identity=another-user@example.com
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ClientMessager.html">ClientMessager</a></li><li><a href="module-ClientRegister.html">ClientRegister</a></li><li><a href="module-Initializers.html">Initializers</a></li><li><a href="module-Logger.html">Logger</a></li><li><a href="module-Main.html">Main</a></li><li><a href="module-Observer.html">Observer</a></li><li><a href="module-Redis.html">Redis</a></li></ul><h3>Global</h3><ul><li><a href="global.html#configureRedis">configureRedis</a></li><li><a href="global.html#startObserver">startObserver</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Client.html">Client</a></li><li><a href="module-ClientMessager.html">ClientMessager</a></li><li><a href="module-ClientRegister.html">ClientRegister</a></li><li><a href="module-Initializers.html">Initializers</a></li><li><a href="module-Logger.html">Logger</a></li><li><a href="module-Main.html">Main</a></li><li><a href="module-Observer.html">Observer</a></li><li><a href="module-Redis.html">Redis</a></li></ul><h3>Global</h3><ul><li><a href="global.html#configureRedis">configureRedis</a></li><li><a href="global.html#startObserver">startObserver</a></li></ul>
 </nav>
 
 <br class="clear">

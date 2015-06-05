@@ -30,10 +30,11 @@
 
 const Bluebird       = require('bluebird');
 const ClientMessager = require('./client-messager');
+const Client         = require('./client');
+const Logger         = require('./logger');
 const Redis          = require('./redis');
-const parseURL       = require('url-parse');
-const pick           = require('lodash').pick;
 const objectValues   = require('lodash').values;
+const KEY_SPLITTER   = Client.KEY_SPLITTER;
 
 /**
  * A register of all contected Clients
@@ -48,17 +49,8 @@ module.exports = {
   getClient       : getClient,
   renewClient     : renewClient,
   registerClient  : registerClient,
+  terminate       : terminate,
 };
-
-/**
- * A representation of someone connected to a space over a WebSocket connection
- *
- * @typedef Client
- * @property {string} id The UUID identifying this client
- * @property {string} identity The identity value of this client (e.g. an email)
- * @property {string} spaceID The ID of the space this client is connected to
- * @property {WS.WebSocket} socket The socket the client is connected over
- */
 
 /**
  * @private
@@ -84,7 +76,7 @@ function clientsInSpace(spaceID) {
  * @return {Promise} A promise resolving with the client after deregistration
  */
 function deregisterClient(client) {
-  const presenceKey = getPresenceKey(client);
+  const presenceKey = Client.getPresenceKey(client);
   delete clients[client.id];
   return Redis.delAsync(presenceKey).return(client);
 }
@@ -114,7 +106,7 @@ function registerClient(clientID, socket) {
 
   let client;
 
-  return createClient(clientID, socket).then(_client => {
+  return Client.create(clientID, socket).then(_client => {
     client = _client;
     return persistClientPresence(client);
   }).then(() => {
@@ -124,8 +116,8 @@ function registerClient(clientID, socket) {
     return Redis.keysAsync(nsKeyPattern);
   }).then(presenceKeys => {
     clients[client.id] = client;
-    const members = presenceKeys.map(getClientFromPresenceKey)
-      .map(client => pick(client, 'id', 'identity'));
+    const members = presenceKeys.map(Client.parsePresenceKey)
+      .map(Client.serialize);
 
     return ClientMessager.send(client, { clients: members });
   }).then(() => client);
@@ -142,47 +134,6 @@ function renewClient(client) {
 }
 
 /**
- * Create a new Client.
- *
- * @param {string} clientID The UUID for the new client
- * @param {WS.WebSocket} socket The socket that the new client is connected on
- * @return {Promise} A promise resolving with a new Client
- */
-function createClient(clientID, socket) {
-  const parsedURL = parseURL(socket.upgradeReq.url, true);
-  const spaceID   = parsedURL.pathname.slice(1);
-  const identity  = parsedURL.query.identity;
-
-  return new Bluebird((resolve, reject) => {
-    if (!spaceID) {
-      reject(new Error('Space ID is required'));
-    }
-
-    if (!identity) {
-      reject(new Error('No identity parameter was supplied'));
-    }
-
-    resolve(Object.freeze({
-      id: clientID,
-      identity: identity,
-      spaceID: spaceID,
-      socket: socket,
-    }));
-  });
-}
-
-/**
- * Extract an client from a presence key.
- *
- * @private
- * @param {string} presenceKey A presence key
- * @return {Client} A client
- */
-function getClientFromPresenceKey(presenceKey) {
-  return clients[presenceKey.split('.').slice(3, 4).join('.')];
-}
-
-/**
  * Get the presence key pattern for a space.
  *
  * @private
@@ -190,18 +141,19 @@ function getClientFromPresenceKey(presenceKey) {
  * @return {string} A pattern to fetch presence keys for a space
  */
 function getNSKeyPattern(spaceID) {
-  return `longhouse.spaces.${spaceID}.*`;
+  return `longhouse${KEY_SPLITTER}spaces${KEY_SPLITTER}${spaceID}${KEY_SPLITTER}*`;
 }
 
 /**
- * Get the Redis presence key for a client.
+ * Persist a client's presence to Redis.
  *
  * @private
- * @param {Client} client The client to fetch the presence key for
- * @return {string} A presence key for a client
+ * @param {Client} client The client to persist presence for
+ * @return {Promise} A promise resolving with the client after persistence
  */
-function getPresenceKey(client) {
-  return `longhouse.spaces.${client.spaceID}.${client.id}.${client.identity}`;
+function persistClientPresence(client) {
+  const presenceKey = Client.getPresenceKey(client);
+  return Redis.setAsync(presenceKey, client.identity);
 }
 
 /**
@@ -222,21 +174,27 @@ function removeAllClients() {
  * @return {Promise} A promise resolving when the expiration is set
  */
 function setClientExpiration(client) {
-  const presenceKey = getPresenceKey(client);
+  const presenceKey = Client.getPresenceKey(client);
   return Redis.pexpireAsync(presenceKey,
     parseInt(process.env.PRESENCE_TTL, 10) || 60000);
 }
 
 /**
- * Persist a client's presence to Redis.
+ * Remove all client presence keys, since the server is shutting down.
  *
- * @private
- * @param {Client} client The client to persist presence for
- * @return {Promise} A promise resolving with the client after persistence
+ * @return {Promise} A promise resolved when the keys have been removed
  */
-function persistClientPresence(client) {
-  const presenceKey = getPresenceKey(client);
-  return Redis.setAsync(presenceKey, client.identity);
+function terminate() {
+  const allClients = objectValues(clients);
+  const keys       = allClients.map(Client.getPresenceKey);
+
+  Logger.log({ event: 'Terminating all clients' });
+
+  if (keys.length) {
+    return Redis.delAsync(keys);
+  } else {
+    return Bluebird.resolve();
+  }
 }
 </code></pre>
         </article>
@@ -248,7 +206,7 @@ function persistClientPresence(client) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ClientMessager.html">ClientMessager</a></li><li><a href="module-ClientRegister.html">ClientRegister</a></li><li><a href="module-Initializers.html">Initializers</a></li><li><a href="module-Logger.html">Logger</a></li><li><a href="module-Main.html">Main</a></li><li><a href="module-Observer.html">Observer</a></li><li><a href="module-Redis.html">Redis</a></li></ul><h3>Global</h3><ul><li><a href="global.html#configureRedis">configureRedis</a></li><li><a href="global.html#startObserver">startObserver</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Client.html">Client</a></li><li><a href="module-ClientMessager.html">ClientMessager</a></li><li><a href="module-ClientRegister.html">ClientRegister</a></li><li><a href="module-Initializers.html">Initializers</a></li><li><a href="module-Logger.html">Logger</a></li><li><a href="module-Main.html">Main</a></li><li><a href="module-Observer.html">Observer</a></li><li><a href="module-Redis.html">Redis</a></li></ul><h3>Global</h3><ul><li><a href="global.html#configureRedis">configureRedis</a></li><li><a href="global.html#startObserver">startObserver</a></li></ul>
 </nav>
 
 <br class="clear">

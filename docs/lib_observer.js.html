@@ -28,11 +28,12 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
+const Client         = require('./client');
 const ClientMessager = require('./client-messager');
 const ClientRegister = require('./client-register');
-const Logger         = require('./logger');
 const Redis          = require('./redis');
 const subscriber     = Redis.createClient();
+const KEY_SPLITTER   = Client.KEY_SPLITTER;
 
 /**
  * Observes Redis keyspace events and notifies clients of updates
@@ -49,8 +50,7 @@ module.exports = { start: start };
  */
 function start() {
   subscriber.on('pmessage', handleMessage);
-
-  return subscriber.psubscribeAsync(`__keyspace@*__:longhouse.spaces.*`);
+  return subscriber.psubscribeAsync(`__keyspace@*__:longhouse${KEY_SPLITTER}spaces${KEY_SPLITTER}*`);
 }
 
 /**
@@ -62,21 +62,20 @@ function start() {
  * @param {string} message The message that was received
  */
 function handleMessage(_pattern, channel, message) {
-  const eventName = message;
-  const clientID  = channel.split('.').slice(3, 4).join('.');
-  const spaceID   = channel.split('.').slice(2, 3).join('.');
-  const identity  = channel.split('.').slice(4).join('.');
+  const presenceKey = channel.split(':').slice(1).join(':');
+  const eventName   = message;
+  const subject     = Client.parsePresenceKey(presenceKey);
 
   switch (eventName) {
     case 'set':
-      publishEvent('remote join', spaceID, clientID, identity);
+      publishEvent('remote join', subject);
       break;
     case 'expired':
-      expireClient(ClientRegister.getClient(clientID));
-      publishEvent('remote leave', spaceID, clientID, identity);
+      expireClient(ClientRegister.getClient(subject.id));
+      publishEvent('remote leave', subject);
       break;
     case 'del':
-      publishEvent('remote leave', spaceID, clientID, identity);
+      publishEvent('remote leave', subject);
       break;
     default:
       return;
@@ -104,18 +103,17 @@ function expireClient(client) {
  *
  * @private
  * @param {string} eventName The name of the event
- * @param {string} spaceID The ID of the space to publish to
- * @param {string} identity The identity of the subject client
+ * @param {Client} subject The subject client
  */
-function publishEvent(eventName, spaceID, identity) {
-  const clients = ClientRegister.clientsInSpace(spaceID);
+function publishEvent(eventName, subject) {
+  const clients = ClientRegister.clientsInSpace(subject.spaceID);
 
   for (let i = 0, len = clients.length; i &lt; len; i++) {
     const client = clients[i];
-    
+
     ClientMessager.send(client, {
       event : eventName,
-      client: { id: client.id, identity: client.identity },
+      client: Client.serialize(subject),
     });
   }
 }
@@ -129,7 +127,7 @@ function publishEvent(eventName, spaceID, identity) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ClientMessager.html">ClientMessager</a></li><li><a href="module-ClientRegister.html">ClientRegister</a></li><li><a href="module-Initializers.html">Initializers</a></li><li><a href="module-Logger.html">Logger</a></li><li><a href="module-Main.html">Main</a></li><li><a href="module-Observer.html">Observer</a></li><li><a href="module-Redis.html">Redis</a></li></ul><h3>Global</h3><ul><li><a href="global.html#configureRedis">configureRedis</a></li><li><a href="global.html#startObserver">startObserver</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Client.html">Client</a></li><li><a href="module-ClientMessager.html">ClientMessager</a></li><li><a href="module-ClientRegister.html">ClientRegister</a></li><li><a href="module-Initializers.html">Initializers</a></li><li><a href="module-Logger.html">Logger</a></li><li><a href="module-Main.html">Main</a></li><li><a href="module-Observer.html">Observer</a></li><li><a href="module-Redis.html">Redis</a></li></ul><h3>Global</h3><ul><li><a href="global.html#configureRedis">configureRedis</a></li><li><a href="global.html#startObserver">startObserver</a></li></ul>
 </nav>
 
 <br class="clear">
