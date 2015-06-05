@@ -34,8 +34,8 @@ clients connected to the space:
 ```json
 {
   "clients": [
-    { "id": "123", "identity": "user@example.com" },
-    { "id": "456", "identity": "user2@example.com" }
+    { "id": "123", "identity": "email@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:26.480Z" },
+    { "id": "456", "identity": "user2@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:28.493Z" }
   ]
 }
 ```
@@ -65,7 +65,7 @@ A client has joined the space.
 ```json
 {
   "event": "remote join",
-  "client": { "id": "123", "identity": "user@example.com" }
+  "client": { "id": "456", "identity": "user2@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:28.493Z" }
 }
 ```
 
@@ -76,7 +76,7 @@ A client has left the space (either by expiration or closing their connection).
 ```json
 {
   "event": "remote leave",
-  "client": { "id": "123", "identity": "user@example.com" }
+  "client": { "id": "456", "identity": "user2@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:28.493Z" }
 }
 ```
 
@@ -100,13 +100,13 @@ An error may or may not result in Longhouse terminating the socket connection.
 ## How does it work?
 
 Longhouse is extremely simple. When a user joins, it sets a key in Redis with
-the format `longhouse.spaces.${spaceID}.${clientUUID}.${userIdentity}` with a
+the format `longhouse/spaces/${spaceID}/${clientUUID}/${userIdentity}/${joinedAt}` with a
 value of the user identity.
 
 These keys have a default expire time of 60 seconds.
 
 In order to determine who is present in a given space, Longhouse just gets every
-key that matches the pattern `longhouse.spaces.${spaceID}.*`. The user identity
+key that matches the pattern `longhouse/spaces/${spaceID}.*`. The user identity
 for each present user is in the key itself, and the values are only used for
 testing purposes.
 
@@ -129,14 +129,14 @@ server:
 wscat -c ws://localhost:5000/space-id?identity=user@example.com
 >
   < {"clients": [
-      { "id": "123", "identity": "user@example.com" }
+      { "id": "123", "identity": "user@example.com", "spaceID": "space-id", "joinedAt": "2015-06-05T21:09:26.480Z" }
     ]
 
 # Terminal 2
 wscat -c ws://localhost:5000/space-id?identity=another-user@example.com
 >
   < {"clients": [
-      { "id": "123", "identity": "user@example.com" },
-      { "id": "456", "identity": "another-user@example.com" }
+      { "id": "123", "identity": "user@example.com", "spaceID": "space-id", "joinedAt": "2015-06-05T21:09:26.480Z" },
+      { "id": "456", "identity": "user2@example.com", "spaceID": "space-id", "joinedAt": "2015-06-05T21:09:28.493Z" }
     ]
 ```
