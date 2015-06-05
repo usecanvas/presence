@@ -46,24 +46,29 @@
         <article><h1>Longhouse <a href="https://circleci.com/gh/usecanvas/longhouse"><img src="https://circleci.com/gh/usecanvas/longhouse.svg?style=svg&amp;circle-token=e95e3468f9e06bfea17fa9321426ef52dd3bca8e" alt="Circle CI"></a></h1><p>A user presence service.</p>
 <h2>Prerequisites</h2><ul>
 <li>nvm</li>
+<li>Redis v3.0.2</li>
 </ul>
-<h2>Install</h2><pre class="prettyprint source lang-sh"><code>git clone git@github.com:usecanvas/longhouse.git
+<h2>Install</h2><pre class="prettyprint source lang-sh"><code># Assumes Redis is already running locally on port 6379
+git clone git@github.com:usecanvas/longhouse.git
 cd longhouse
 nvm install
 nvm use
-npm install
-echo &quot;REDIS_URL=redis://localhost:6379&quot; > .env
-echo &quot;PRESENCE_TTL=30000&quot; >> .env
+npm run bootstrap
 npm run dev</code></pre><h2>Use</h2><p>Longhouse tracks user presence as soon as they connect. To connect to space in
 Longhouse, open a WebSocket connection to a URL like:</p>
 <pre class="prettyprint source"><code>wss://longhouse.example.com/space_uuid?identity=email@example.com</code></pre><p>After joining, the client will quickly receive a message with the current
 clients connected to the space:</p>
 <pre class="prettyprint source lang-json"><code>{
+  &quot;id&quot;: &quot;123&quot;,
   &quot;clients&quot;: [
-    { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;user@example.com&quot; },
-    { &quot;id&quot;: &quot;456&quot;, &quot;identity&quot;: &quot;user2@example.com&quot; }
+    { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;email@example.com&quot;, &quot;spaceID&quot;: &quot;space_uuid&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:26.480Z&quot; },
+    { &quot;id&quot;: &quot;456&quot;, &quot;identity&quot;: &quot;user2@example.com&quot;, &quot;spaceID&quot;: &quot;space_uuid&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:28.493Z&quot; }
   ]
-}</code></pre><h3>Actions</h3><h4><code>ping</code></h4><p>Sending this action will renew the client's presence lease.</p>
+}</code></pre><h2>Reconnecting</h2><p>In the event of a disconnection by Longhouse, a client can attempt to reconnect
+with a former &quot;id&quot;. This ensures that as long as their old presence lease has
+not expired, they will not appear to have left and re-joined the room.</p>
+<p>This is useful in handling sudden process restarts.</p>
+<pre class="prettyprint source"><code>wss://longhouse.example.com/space_uuid?identity=email@example.com&id=123</code></pre><h3>Actions</h3><h4><code>ping</code></h4><p>Sending this action will renew the client's presence lease.</p>
 <p>This is currently the only action that should be sent to Longhouse. It needs to
 be sent less frequently than the value of <code>$PRESENCE_TTL</code> (in milliseconds).</p>
 <pre class="prettyprint source lang-json"><code>{&quot;action&quot;: &quot;ping&quot;}</code></pre><h3>Remote Events</h3><p>When relevant events happen on remote clients, Longhouse will send a message to
@@ -71,11 +76,11 @@ each client connected to the space where the event occurred.</p>
 <h4><code>remote join</code></h4><p>A client has joined the space.</p>
 <pre class="prettyprint source lang-json"><code>{
   &quot;event&quot;: &quot;remote join&quot;,
-  &quot;client&quot;: { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;user@example.com&quot; }
+  &quot;client&quot;: { &quot;id&quot;: &quot;456&quot;, &quot;identity&quot;: &quot;user2@example.com&quot;, &quot;spaceID&quot;: &quot;space_uuid&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:28.493Z&quot; }
 }</code></pre><h4><code>remote leave</code></h4><p>A client has left the space (either by expiration or closing their connection).</p>
 <pre class="prettyprint source lang-json"><code>{
   &quot;event&quot;: &quot;remote leave&quot;,
-  &quot;client&quot;: { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;user@example.com&quot; }
+  &quot;client&quot;: { &quot;id&quot;: &quot;456&quot;, &quot;identity&quot;: &quot;user2@example.com&quot;, &quot;spaceID&quot;: &quot;space_uuid&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:28.493Z&quot; }
 }</code></pre><h3>Configuration</h3><ul>
 <li><code>$PRESENCE_TTL</code> The time (in ms) after which client presence will
 automatically expire</li>
@@ -85,11 +90,11 @@ automatically expire</li>
 sent in this format:</p>
 <pre class="prettyprint source lang-json"><code>{ &quot;error&quot;: &quot;Error message&quot; }</code></pre><p>An error may or may not result in Longhouse terminating the socket connection.</p>
 <h2>How does it work?</h2><p>Longhouse is extremely simple. When a user joins, it sets a key in Redis with
-the format <code>longhouse.spaces.${spaceID}.${clientUUID}.${userIdentity}</code> with a
+the format <code>longhouse/spaces/${spaceID}/${clientUUID}/${userIdentity}/${joinedAt}</code> with a
 value of the user identity.</p>
 <p>These keys have a default expire time of 60 seconds.</p>
 <p>In order to determine who is present in a given space, Longhouse just gets every
-key that matches the pattern <code>longhouse.spaces.${spaceID}.*</code>. The user identity
+key that matches the pattern <code>longhouse/spaces/${spaceID}.*</code>. The user identity
 for each present user is in the key itself, and the values are only used for
 testing purposes.</p>
 <h2>Testing</h2><p>The unit tests can be run with <code>npm test</code>. A Redis server must be running, but
@@ -101,15 +106,15 @@ server:</p>
 wscat -c ws://localhost:5000/space-id?identity=user@example.com
 >
   &lt; {&quot;clients&quot;: [
-      { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;user@example.com&quot; }
+      { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;user@example.com&quot;, &quot;spaceID&quot;: &quot;space-id&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:26.480Z&quot; }
     ]
 
 # Terminal 2
 wscat -c ws://localhost:5000/space-id?identity=another-user@example.com
 >
   &lt; {&quot;clients&quot;: [
-      { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;user@example.com&quot; },
-      { &quot;id&quot;: &quot;456&quot;, &quot;identity&quot;: &quot;another-user@example.com&quot; }
+      { &quot;id&quot;: &quot;123&quot;, &quot;identity&quot;: &quot;user@example.com&quot;, &quot;spaceID&quot;: &quot;space-id&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:26.480Z&quot; },
+      { &quot;id&quot;: &quot;456&quot;, &quot;identity&quot;: &quot;user2@example.com&quot;, &quot;spaceID&quot;: &quot;space-id&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:28.493Z&quot; }
     ]</code></pre></article>
     </section>
 

@@ -28,10 +28,8 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-const Bluebird       = require('bluebird');
 const ClientMessager = require('./client-messager');
 const Client         = require('./client');
-const Logger         = require('./logger');
 const Redis          = require('./redis');
 const objectValues   = require('lodash').values;
 const KEY_SPLITTER   = Client.KEY_SPLITTER;
@@ -49,7 +47,6 @@ module.exports = {
   getClient       : getClient,
   renewClient     : renewClient,
   registerClient  : registerClient,
-  terminate       : terminate,
 };
 
 /**
@@ -107,20 +104,15 @@ function getClient(clientID) {
  *
  * @static
  * @example &lt;caption>Registering a client&lt;/caption>
- * ClientRegister.registerClient('clientID', webSocket).then(client => console.log(client));
- * @param {string} clientID The UUID for the new client
+ * ClientRegister.registerClient(webSocket).then(client => console.log(client));
  * @param {WS.WebSocket} socket The socket that the new client is connected on
  * @return {Promise.&lt;Client>} A promise resolved with the newly-registered
  *   Client
  */
-function registerClient(clientID, socket) {
-  if (clients[clientID]) {
-    throw new Error(`A client is already connected with that ID: ${clientID}`);
-  }
-
+function registerClient(socket) {
   let client;
 
-  return Client.create(clientID, socket).then(_client => {
+  return Client.create(socket).then(_client => {
     client = _client;
     return persistClientPresence(client);
   }).then(() => {
@@ -133,7 +125,7 @@ function registerClient(clientID, socket) {
     const members = presenceKeys.map(Client.parsePresenceKey)
       .map(Client.serialize);
 
-    return ClientMessager.send(client, { clients: members });
+    return ClientMessager.send(client, { id: client.id, clients: members });
   }).then(() => client);
 }
 
@@ -160,25 +152,6 @@ function renewClient(client) {
 function removeAllClients() {
   for (let key in clients) {
     delete clients[key];
-  }
-}
-
-/**
- * Remove all client presence keys, since the server is shutting down.
- *
- * @static
- * @return {Promise} A promise resolved when the keys have been removed
- */
-function terminate() {
-  const allClients = objectValues(clients);
-  const keys       = allClients.map(Client.getPresenceKey);
-
-  Logger.log({ event: 'Terminating all clients' });
-
-  if (keys.length) {
-    return Redis.delAsync(keys);
-  } else {
-    return Bluebird.resolve();
   }
 }
 
