@@ -13,9 +13,7 @@ git clone git@github.com:usecanvas/longhouse.git
 cd longhouse
 nvm install
 nvm use
-npm install
-echo "REDIS_URL=redis://localhost:6379" > .env
-echo "PRESENCE_TTL=30000" >> .env
+npm run bootstrap
 npm run dev
 ```
 
