@@ -6,7 +6,7 @@ process.env.REDIS_URL    = 'redis://localhost:6379';
 require('chai').should();
 
 const ClientRegister = require('../lib/client-register');
-const Initializers   = require('../initializers');
+// const Initializers   = require('../initializers');
 const Redis          = require('../lib/redis');
 
 beforeEach(() => {
