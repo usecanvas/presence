@@ -31,13 +31,18 @@
 const Bluebird     = require('bluebird');
 const parseURL     = require('url-parse');
 const pick         = require('lodash').pick;
-const KEY_SPLITTER = '/';
 
 /**
  * Functions for working with Client objects
  *
  * @module Client
  */
+
+ /**
+  * @member {string} KEY_SPLITTER The value used to separate client information
+  *   in a PresenceKey
+  */
+const KEY_SPLITTER = '/';
 
 module.exports = {
   create: create,
@@ -50,7 +55,7 @@ module.exports = {
 /**
  * A representation of someone connected to a space over a WebSocket connection
  *
- * @typedef Client
+ * @typedef {object} Client
  * @property {string} id The UUID identifying this client
  * @property {string} identity The identity value of this client (e.g. an email)
  * @property {string} spaceID The ID of the space this client is connected to
@@ -61,19 +66,22 @@ module.exports = {
 /**
  * A key containing information about a connected client
  *
- * The client information is all in the key, split by colons:
+ * The client information is all in the key, split by forward slashes:
  *
- * longhouse:spaces:${spaceID}:${id}:${identity}:${joinedAt}
+ *     longhouse/spaces/${spaceID}/${id}/${identity}/${joinedAt}
  *
- * @typedef PresenceKey
+ * @typedef {string} PresenceKey
  */
 
 /**
  * Create a new Client.
  *
+ * @static
+ * @example &lt;caption>Creating a new Client&lt;/caption>
+ * Client.create('123', webSocket).then(client => console.log(client));
  * @param {string} clientID The UUID for the new client
  * @param {WS.WebSocket} socket The socket that the new client is connected on
- * @return {Promise} A promise resolving with a new Client
+ * @return {Promise.&lt;Client>} A promise resolving with a new Client
  */
 function create(clientID, socket) {
   const parsedURL = parseURL(socket.upgradeReq.url, true);
@@ -102,6 +110,10 @@ function create(clientID, socket) {
 /**
  * Parse a presence key for Client info
  *
+ * @static
+ * @example &lt;caption>Parsing a presence key&lt;/caption>
+ * Client.parsePresenceKey('longhouse/spaces/spaceID/clientId/clientIdentity/2015-06-05T20:51:47.411Z');
+ * // { id: 'clientID', identity: 'clientIdentity', spaceID: 'spaceID', joinedAt: '2015-06-05T20:51:47.411Z' }
  * @param {string} presenceKey A presence key
  * @return {Client} A client
  */
@@ -120,6 +132,10 @@ function parsePresenceKey(presenceKey) {
 /**
  * Get the Redis presence key for a client.
  *
+ * @static
+ * @example &lt;caption>Getting a Redis presence key for a client&lt;/caption>
+ * Client.getPresenceKey(client);
+ * // 'longhouse/spaces/spaceID/clientId/clientIdentity/2015-06-05T20:51:47.411Z'
  * @param {Client} client The client to fetch the presence key for
  * @return {string} A presence key for a client
  */
@@ -137,6 +153,10 @@ function getPresenceKey(client) {
 /**
  * Serialize a client for sending to another client.
  *
+ * @static
+ * @example &lt;caption>Serializing a client&lt;/caption>
+ * Client.serialize(client);
+ * // { id: 'clientID', identity: 'clientIdentity', joinedAt: '2015-06-05T20:51:47.411Z' }
  * @param {Client} client The client to serialize
  */
 function serialize(client) {

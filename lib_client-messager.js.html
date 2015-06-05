@@ -42,6 +42,9 @@ module.exports = {
 /**
  * Send a message to a Client.
  *
+ * @static
+ * @example &lt;caption>Messaging a client&lt;/caption>
+ * ClientMessager.send(client, { hello: 'world' });
  * @param {Client} client The client to send the message to
  * @param {object} message The message to send, JSON-serialized, to the client
  */
@@ -58,6 +61,9 @@ function send(client, message) {
 /**
  * Send an error message to a Client.
  *
+ * @static
+ * @example &lt;caption>Messaging a client an error&lt;/caption>
+ * ClientMessager.error(client, 'Error!');
  * @param {Client} client The client to send the error to
  * @param {Error} err The error to send to the client
  */

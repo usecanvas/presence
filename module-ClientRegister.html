@@ -132,66 +132,27 @@
 
         
             
-<h4 class="name" id="~clients"><span class="type-signature">(private, inner) </span>clients<span class="type-signature"></span></h4>
+<h4 class="name" id="~clients"><span class="type-signature">(private, inner) </span>clients<span class="type-signature"> :object</span></h4>
 
 
 
 
+<div class="description">
+    <p>An object containing all clients currently connected</p>
+</div>
 
 
 
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
+    <h5>Type:</h5>
+    <ul>
+        <li>
             
-                <td class="name"><code>clients</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">object</span>
 
 
-            
-            </td>
+        </li>
+    </ul>
 
-            
-
-            
-
-            <td class="description last"><p>An object containing all clients currently
-  connected</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -225,7 +186,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line32">line 32</a>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line27">line 27</a>
     </li></ul></dd>
     
 
@@ -252,14 +213,14 @@
 
     
 
-    <h4 class="name" id="~clientsInSpace"><span class="type-signature">(inner) </span>clientsInSpace<span class="signature">(spaceID)</span><span class="type-signature"> &rarr; {Array.&lt;Client>}</span></h4>
+    <h4 class="name" id=".clientsInSpace"><span class="type-signature">(static) </span>clientsInSpace<span class="signature">(spaceID)</span><span class="type-signature"> &rarr; {Array.&lt;Client>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Return the list of Clients in a space.</p>
+    <p>Return the list of Clients in a space <em>in the current process</em>.</p>
 </div>
 
 
@@ -352,7 +313,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line40">line 40</a>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line43">line 43</a>
     </li></ul></dd>
     
 
@@ -399,13 +360,21 @@
     
 
 
+    <h5>Example</h5>
+    
+        <p class="code-caption">Listing the clients in a space</p>
+    
+    <pre class="prettyprint"><code>ClientRegister.clientsInSpace(spaceID);
+// [{ id: 'clientID' }] etc...</code></pre>
+
+
 
         
             
 
     
 
-    <h4 class="name" id="~deregisterClient"><span class="type-signature">(inner) </span>deregisterClient<span class="signature">(client)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id=".deregisterClient"><span class="type-signature">(static) </span>deregisterClient<span class="signature">(client)</span><span class="type-signature"> &rarr; {Promise.&lt;Client>}</span></h4>
 
     
 
@@ -505,7 +474,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line50">line 50</a>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -532,7 +501,8 @@
 
         
 <div class="param-desc">
-    <p>A promise resolving with the client after deregistration</p>
+    <p>A promise resolving with the client after
+  deregistration</p>
 </div>
 
 
@@ -543,7 +513,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type">Promise.&lt;Client></span>
 
 
     </dd>
@@ -552,20 +522,27 @@
     
 
 
+    <h5>Example</h5>
+    
+        <p class="code-caption">Deregistering a client</p>
+    
+    <pre class="prettyprint"><code>ClientRegister.deregisterClient(client).then(client => console.log(client));</code></pre>
+
+
 
         
             
 
     
 
-    <h4 class="name" id="~getClient"><span class="type-signature">(inner) </span>getClient<span class="signature">(clientID)</span><span class="type-signature"> &rarr; {Client}</span></h4>
+    <h4 class="name" id=".getClient"><span class="type-signature">(static) </span>getClient<span class="signature">(clientID)</span><span class="type-signature"> &rarr; {Client}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Get a client by ID.</p>
+    <p>Get a client by ID <em>from the current process's client pool</em>.</p>
 </div>
 
 
@@ -658,7 +635,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line62">line 62</a>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line72">line 72</a>
     </li></ul></dd>
     
 
@@ -701,157 +678,11 @@
     
 
 
-
-        
-            
-
+    <h5>Example</h5>
     
-
-    <h4 class="name" id="~getNSKeyPattern"><span class="type-signature">(private, inner) </span>getNSKeyPattern<span class="signature">(spaceID)</span><span class="type-signature"> &rarr; {string}</span></h4>
-
+        <p class="code-caption">Getting a client</p>
     
-
-
-
-<div class="description">
-    <p>Get the presence key pattern for a space.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>spaceID</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The ID of the space to get presence key pattern for</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line115">line 115</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>A pattern to fetch presence keys for a space</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
+    <pre class="prettyprint"><code>Client.getClient('clientID');</code></pre>
 
 
 
@@ -860,160 +691,7 @@
 
     
 
-    <h4 class="name" id="~persistClientPresence"><span class="type-signature">(private, inner) </span>persistClientPresence<span class="signature">(client)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Persist a client's presence to Redis.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>client</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Client</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The client to persist presence for</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line126">line 126</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>A promise resolving with the client after persistence</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="~registerClient"><span class="type-signature">(inner) </span>registerClient<span class="signature">(clientID, socket)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id=".registerClient"><span class="type-signature">(static) </span>registerClient<span class="signature">(clientID, socket)</span><span class="type-signature"> &rarr; {Promise.&lt;Client>}</span></h4>
 
     
 
@@ -1137,7 +815,7 @@ currently joined members in their space.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line74">line 74</a>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -1164,7 +842,8 @@ currently joined members in their space.</p>
 
         
 <div class="param-desc">
-    <p>A promise resolved with the newly-registered Client</p>
+    <p>A promise resolved with the newly-registered
+  Client</p>
 </div>
 
 
@@ -1175,7 +854,7 @@ currently joined members in their space.</p>
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type">Promise.&lt;Client></span>
 
 
     </dd>
@@ -1184,13 +863,20 @@ currently joined members in their space.</p>
     
 
 
+    <h5>Example</h5>
+    
+        <p class="code-caption">Registering a client</p>
+    
+    <pre class="prettyprint"><code>ClientRegister.registerClient('clientID', webSocket).then(client => console.log(client));</code></pre>
+
+
 
         
             
 
     
 
-    <h4 class="name" id="~removeAllClients"><span class="type-signature">(inner) </span>removeAllClients<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".removeAllClients"><span class="type-signature">(static) </span>removeAllClients<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
@@ -1242,7 +928,7 @@ Redis).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line135">line 135</a>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line132">line 132</a>
     </li></ul></dd>
     
 
@@ -1273,7 +959,7 @@ Redis).</p>
 
     
 
-    <h4 class="name" id="~renewClient"><span class="type-signature">(inner) </span>renewClient<span class="signature">(client)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id=".renewClient"><span class="type-signature">(static) </span>renewClient<span class="signature">(client)</span><span class="type-signature"> &rarr; {Promise.&lt;Client>}</span></h4>
 
     
 
@@ -1373,7 +1059,7 @@ Redis).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line104">line 104</a>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line122">line 122</a>
     </li></ul></dd>
     
 
@@ -1400,7 +1086,119 @@ Redis).</p>
 
         
 <div class="param-desc">
-    <p>A promise resolving with the client after presence renewed</p>
+    <p>A promise resolving with the client after presence
+  renewed</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Client></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    <h5>Example</h5>
+    
+        <p class="code-caption">Renewing a client's presence lease</p>
+    
+    <pre class="prettyprint"><code>ClientRegister.renewClient(client).then(client => console.log(client));</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".terminate"><span class="type-signature">(static) </span>terminate<span class="signature">()</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Remove all client presence keys, since the server is shutting down.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line144">line 144</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A promise resolved when the keys have been removed</p>
 </div>
 
 
@@ -1426,7 +1224,314 @@ Redis).</p>
 
     
 
-    <h4 class="name" id="~setClientExpiration"><span class="type-signature">(private, inner) </span>setClientExpiration<span class="signature">(client)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="~getNSKeyPattern"><span class="type-signature">(private, inner) </span>getNSKeyPattern<span class="signature">(spaceID)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Get the presence key pattern for a space.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>spaceID</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ID of the space to get presence key pattern for</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line164">line 164</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A pattern to fetch presence keys for a space</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~persistClientPresence"><span class="type-signature">(private, inner) </span>persistClientPresence<span class="signature">(client)</span><span class="type-signature"> &rarr; {Promise.&lt;Client>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Persist a client's presence to Redis.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>client</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Client</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The client to persist presence for</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line176">line 176</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A promise resolving with the client after
+  persistence</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Client></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~setClientExpiration"><span class="type-signature">(private, inner) </span>setClientExpiration<span class="signature">(client)</span><span class="type-signature"> &rarr; {Promise.&lt;Client>}</span></h4>
 
     
 
@@ -1526,7 +1631,7 @@ Redis).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line148">line 148</a>
+        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line188">line 188</a>
     </li></ul></dd>
     
 
@@ -1564,111 +1669,7 @@ Redis).</p>
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="~terminate"><span class="type-signature">(inner) </span>terminate<span class="signature">()</span><span class="type-signature"> &rarr; {Promise}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Remove all client presence keys, since the server is shutting down.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_client-register.js.html">lib/client-register.js</a>, <a href="lib_client-register.js.html#line159">line 159</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>A promise resolved when the keys have been removed</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
+<span class="param-type">Promise.&lt;Client></span>
 
 
     </dd>
