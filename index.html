@@ -44,6 +44,7 @@
 
     <section>
         <article><h1>Longhouse <a href="https://circleci.com/gh/usecanvas/longhouse"><img src="https://circleci.com/gh/usecanvas/longhouse.svg?style=svg&amp;circle-token=e95e3468f9e06bfea17fa9321426ef52dd3bca8e" alt="Circle CI"></a></h1><p>A user presence service.</p>
+<p><a href="https://heroku.com/deploy?template=https://github.com/usecanvas/longhouse"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy"></a></p>
 <h2>Prerequisites</h2><ul>
 <li>nvm</li>
 <li>Redis v3.0.2</li>
@@ -81,10 +82,12 @@ each client connected to the space where the event occurred.</p>
 <pre class="prettyprint source lang-json"><code>{
   &quot;event&quot;: &quot;remote leave&quot;,
   &quot;client&quot;: { &quot;id&quot;: &quot;456&quot;, &quot;identity&quot;: &quot;user2@example.com&quot;, &quot;spaceID&quot;: &quot;space_uuid&quot;, &quot;joinedAt&quot;: &quot;2015-06-05T21:09:28.493Z&quot; }
-}</code></pre><h3>Configuration</h3><ul>
+}</code></pre><h3>Configuration (environvment variables)</h3><ul>
 <li><code>$PRESENCE_TTL</code> The time (in ms) after which client presence will
 automatically expire</li>
-<li><code>$REDIS_URL</code> The URL to the Redis server</li>
+<li><code>$REDIS_URL</code> The URL to a Redis server that supports keyspace notifications</li>
+<li><code>$REDISCLOUD_URL</code> A URL pointing to a RedisCloud server that will override
+<code>$REDIS_URL</code> if it exists</li>
 </ul>
 <h3>Errors</h3><p>When an error occurs that is relevant to the client, an error message will be
 sent in this format:</p>

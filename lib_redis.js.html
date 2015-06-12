@@ -54,9 +54,10 @@ module.exports = createClient();
  * @return {RedisLib.Client}
  */
 function createClient() {
-  const redisURL = URL.parse(process.env.REDIS_URL);
-  const password = redisURL.auth ? redisURL.auth.split(':')[1] : null;
-  const client   = RedisLib.createClient(redisURL.port, redisURL.hostname,
+  const redisURLEnv = process.env.REDISCLOUD_URL || process.env.REDIS_URL;
+  const redisURL    = URL.parse(redisURLEnv);
+  const password    = redisURL.auth ? redisURL.auth.split(':')[1] : null;
+  const client      = RedisLib.createClient(redisURL.port, redisURL.hostname,
     { auth_pass: password });
 
   client.createClient = createClient;
