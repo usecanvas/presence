@@ -1,0 +1,8 @@
+{
+  "name": "Longhouse",
+  "description": "A user presence service",
+  "repository": "https://github.com/usecanvas/longhouse",
+  "website": "https://github.com/usecanvas/longhouse",
+  "keywords": ["presence", "realtime"],
+  "addons": ["rediscloud"]
+}

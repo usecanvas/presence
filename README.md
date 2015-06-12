@@ -93,11 +93,13 @@ A client has left the space (either by expiration or closing their connection).
 }
 ```
 
-### Configuration
+### Configuration (environvment variables)
 
 - `$PRESENCE_TTL` The time (in ms) after which client presence will
   automatically expire
-- `$REDIS_URL` The URL to the Redis server
+- `$REDIS_URL` The URL to a Redis server that supports keyspace notifications
+- `$REDISCLOUD_URL` A URL pointing to a RedisCloud server that will override
+  `$REDIS_URL` if it exists
 
 ### Errors
 
