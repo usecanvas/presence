@@ -2,14 +2,21 @@
 
 require('../test-helper');
 
-const proxyquire = require('proxyquire').noCallThru();
-const MockLogger = require('../mock-logger');
-const Logger     = proxyquire('../../lib/logger', { logfmt: MockLogger });
+const Logger  = require('../../lib/logger');
+const Logfmt  = require('logfmt');
+const Sinon   = require('sinon');
 
 describe('Logger', () => {
+  let logSpy, errSpy;
+
+  beforeEach(() => {
+    logSpy = Sinon.stub(Logfmt, 'log');
+    errSpy = Sinon.stub(Logfmt, 'error');
+  });
+
   afterEach(() => {
-    MockLogger.logged  = null;
-    MockLogger.errored = null;
+    Logfmt.log.restore();
+    Logfmt.error.restore();
   });
 
   describe('#clientLog', () => {
@@ -19,9 +26,10 @@ describe('Logger', () => {
         requestID: 'requestID',
       }, { foo: 'bar' });
 
-      MockLogger.logged.client_id.should.eql('clientID');
-      MockLogger.logged.request_id.should.eql('requestID');
-      MockLogger.logged.foo.should.eql('bar');
+      const arg = logSpy.firstCall.args[0];
+      arg.client_id.should.eql('clientID');
+      arg.request_id.should.eql('requestID');
+      arg.foo.should.eql('bar');
     });
   });
 
@@ -29,14 +37,15 @@ describe('Logger', () => {
     it('logs the error', () => {
       const err = new Error('Error.');
       Logger.error(err);
-      MockLogger.errored.should.eql(err);
+      errSpy.should.have.been.calledWith(err);
     });
   });
 
   describe('#log', () => {
     it('logs the given object', () => {
       Logger.log({ foo: 'bar' });
-      MockLogger.logged.foo.should.eql('bar');
+      const arg = logSpy.firstCall.args[0];
+      arg.foo.should.eql('bar');
     });
   });
 });
