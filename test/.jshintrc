@@ -1,4 +1,5 @@
 {
+  "-W030": true,
   "esnext": true,
   "mocha": true,
   "node": true,

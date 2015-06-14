@@ -3,7 +3,9 @@
 process.env.PRESENCE_TTL = 20;
 process.env.REDIS_URL    = 'redis://localhost:6379';
 
-require('chai').should();
+const chai = require('chai');
+chai.should();
+chai.use(require('sinon-chai'));
 
 const ClientRegister = require('../lib/client-register');
 // const Initializers   = require('../initializers');
