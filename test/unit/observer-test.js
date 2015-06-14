@@ -7,7 +7,6 @@ const Client         = require('../../lib/client');
 const ClientMessager = require('../../lib/client-messager');
 const ClientRegister = require('../../lib/client-register');
 const MockSocket     = require('../mock-socket');
-const proxyquire     = require('proxyquire').noCallThru();
 const Redis          = require('../../lib/redis');
 const Sinon          = require('sinon');
 
@@ -15,21 +14,20 @@ describe('Observer', () => {
   let Observer, client, subscriber;
 
   beforeEach(() => {
-    const clientSocket = new MockSocket('/space?identity=a');
+    subscriber = Redis.createClient();
+    Sinon.stub(Redis, 'createClient', () => subscriber);
 
+    delete require.cache[require.resolve('../../lib/observer')];
+    Observer = require('../../lib/observer');
+
+    const clientSocket = new MockSocket('/space?identity=a');
     return Client.create(clientSocket).then(_client => {
       client = _client;
-      subscriber = Redis.createClient();
-
-      Observer = proxyquire('../../lib/observer', {
-        './redis': { createClient: () => {
-          return subscriber;
-        }},
-      });
     });
   });
 
   afterEach(() => {
+    Redis.createClient.restore();
     subscriber.end();
   });
 
