@@ -38,23 +38,10 @@ const merge  = require('lodash').merge;
  */
 
 module.exports = {
-  log: log,
   clientLog: clientLog,
   error: error,
+  log: log,
 };
-
-/**
- * Log a message to the console in the Logfmt style.
- *
- * @static
- * @example &lt;caption>Logging a message&lt;/caption>
- * Logger.log({ hello: 'world' });
- * @param {object} message The message to be logged
- */
-function log(message) {
-  const now = new Date().toISOString();
-  Logfmt.log(merge({ time: now }, message));
-}
 
 /**
  * Log a message along with client metadata.
@@ -82,6 +69,20 @@ function log(message) {
 function error(err) {
   Logfmt.error(err);
 }
+
+/**
+ * Log a message to the console in the Logfmt style.
+ *
+ * @static
+ * @example &lt;caption>Logging a message&lt;/caption>
+ * Logger.log({ hello: 'world' });
+ * @param {object} message The message to be logged
+ */
+function log(message) {
+  const now = new Date().toISOString();
+  Logfmt.log(merge({ time: now }, message));
+}
+
 </code></pre>
         </article>
     </section>
