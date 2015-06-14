@@ -2,14 +2,19 @@
 
 require('../test-helper');
 
-const MockClient     = require('../mock-client');
+const Client         = require('../../lib/client');
 const ClientMessager = require('../../lib/client-messager');
+const MockSocket     = require('../mock-socket');
 
 describe('ClientMessager', () => {
   let client;
 
   beforeEach(() => {
-    client = new MockClient();
+    const socket = new MockSocket('/space?identity=a');
+
+    return Client.create(socket).then(_client => {
+      client = _client;
+    });
   });
 
   describe('#send', () => {
