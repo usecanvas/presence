@@ -2,4 +2,4 @@ machine:
   pre:
     - curl https://raw.githubusercontent.com/creationix/nvm/v0.25.3/install.sh | bash
   node:
-    version: iojs-2.2.1
+    version: iojs-2.3.0
