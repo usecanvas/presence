@@ -1,7 +1,14 @@
-FROM iojs:2.3.0-onbuild
+FROM iojs:2.3.0
 
 ENV PATH ./node_modules/.bin/:$PATH
-
 EXPOSE 80
 
-CMD npm start
+RUN mkdir -p /usr/app
+WORKDIR /usr/app
+
+COPY package.json /usr/app/
+RUN npm install
+
+COPY . /usr/app/
+
+CMD ["npm", "start"]
