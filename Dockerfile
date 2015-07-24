@@ -3,6 +3,8 @@ FROM iojs:2.3.0
 ENV PATH ./node_modules/.bin/:$PATH
 EXPOSE 80
 
+RUN npm install -g node-inspector
+
 RUN mkdir -p /usr/app
 WORKDIR /usr/app
 
