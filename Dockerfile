@@ -1,16 +1,10 @@
 FROM iojs:2.3.0
 
 ENV PATH ./node_modules/.bin/:$PATH
-EXPOSE 80
+EXPOSE 5003
 
+WORKDIR /usr/app
 RUN npm install -g node-inspector
 
-RUN mkdir -p /usr/app
-WORKDIR /usr/app
-
-COPY package.json /usr/app/
-RUN npm install
-
-COPY . /usr/app/
-
+ENTRYPOINT ["/usr/app/bin/entrypoint.sh"]
 CMD ["npm", "start"]
