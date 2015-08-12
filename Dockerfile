@@ -1,4 +1,4 @@
-FROM iojs:2.3.0
+FROM iojs:2.5.0
 
 ENV PATH ./node_modules/.bin/:$PATH
 EXPOSE 80
