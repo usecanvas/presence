@@ -66,6 +66,10 @@ function startWSServer(httpServer) {
 function onConnection(socket) {
   const requestID = socket.upgradeReq.headers['x-request-id'];
 
+  socket.pingInterval = setInterval(() => {
+    socket.send(JSON.stringify({ ping: true }));
+  }, 30000);
+
   ClientRegister.registerClient(socket).then(client => {
     Logger.clientLog(client, { event: 'New WebSocket client connected' });
     client.socket.on('close', () => onClose(client));
@@ -113,6 +117,7 @@ function onMessage(client, message) {
  * @param {Client} client The client whose socket has closed.
  */
 function onClose(client) {
+  clearInterval(client.socket.pingInterval);
   Logger.clientLog(client, { event: 'Client closed socket connection' });
   ClientRegister.deregisterClient(client);
 }
