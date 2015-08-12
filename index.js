@@ -105,9 +105,7 @@ function onMessage(client, message) {
     return;
   }
 
-  ClientRegister.renewClient(client).then(() => {
-    Logger.clientLog(client, { event: 'Presence renewed' });
-  });
+  ClientRegister.renewClient(client);
 }
 
 /**
