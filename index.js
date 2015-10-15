@@ -9,6 +9,12 @@ const Teamster       = require('teamster');
 const WSServer       = require('ws').Server;
 const app            = require('koa')();
 
+app.use(function* showHealth() {
+  if (this.url === '/health') {
+    this.body = 'ok';
+  }
+});
+
 /**
  * A collection of private functions, run automatically when the app starts, for
  * creating our Koa app and HTTP and WS servers.
