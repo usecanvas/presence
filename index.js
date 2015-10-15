@@ -46,7 +46,7 @@ function createTeamster() {
 function startServers() {
   const port = parseInt(process.env.PORT, 10) || 5000;
 
-  HTTP.createServer(app.callback()).listen(port, () => {
+  HTTP.createServer(app.callback()).listen(port, function() {
     Logger.log({ event: `HTTP server listening on port ${port}` });
     startWSServer(this);
   });
