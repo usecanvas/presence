@@ -3,9 +3,9 @@
 if [[ "$INSPECT" = "true" ]]; then
   echo "starting api with node-inspector"
   node-inspector --web-host=0.0.0.0 -p 8080 &
-  nodemon --debug --harmony_arrow_functions --harmony_computed_property_names index.js
+  nodemon --debug index.js
 elif [[ "$NODE_ENV" = "development" ]]; then
-  nodemon --harmony_arrow_functions --harmony_computed_property_names index.js
+  nodemon index.js
 elif [[ "$NODE_ENV" = "test" ]]; then
   npm test
 elif [[ "$NODE_ENV" = "production" ]]; then
