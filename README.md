@@ -37,8 +37,8 @@ clients connected to the space:
 {
   "id": "123",
   "clients": [
-    { "id": "123", "identity": "email@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:26.480Z" },
-    { "id": "456", "identity": "user2@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:28.493Z" }
+    { "id": "123", "identity": "email@example.com", "joinedAt": "2015-06-05T21:09:26.480Z" },
+    { "id": "456", "identity": "user2@example.com", "joinedAt": "2015-06-05T21:09:28.493Z" }
   ]
 }
 ```
@@ -80,7 +80,7 @@ A client has joined the space.
 ```json
 {
   "event": "remote join",
-  "client": { "id": "456", "identity": "user2@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:28.493Z" }
+  "client": { "id": "456", "identity": "user2@example.com", "joinedAt": "2015-06-05T21:09:28.493Z" }
 }
 ```
 
@@ -91,7 +91,7 @@ A client has left the space (either by expiration or closing their connection).
 ```json
 {
   "event": "remote leave",
-  "client": { "id": "456", "identity": "user2@example.com", "spaceID": "space_uuid", "joinedAt": "2015-06-05T21:09:28.493Z" }
+  "client": { "id": "456", "identity": "user2@example.com", "joinedAt": "2015-06-05T21:09:28.493Z" }
 }
 ```
 
@@ -143,17 +143,17 @@ server:
 
 ```bash
 # Terminal 1
-wscat -c ws://localhost:5000/space-id?identity=user@example.com
+wscat -c ws://localhost:5003/space-id?identity=user@example.com
 >
   < {"clients": [
-      { "id": "123", "identity": "user@example.com", "spaceID": "space-id", "joinedAt": "2015-06-05T21:09:26.480Z" }
+      { "id": "123", "identity": "user@example.com", "joinedAt": "2015-06-05T21:09:26.480Z" }
     ]
 
 # Terminal 2
-wscat -c ws://localhost:5000/space-id?identity=another-user@example.com
+wscat -c ws://localhost:5003/space-id?identity=another-user@example.com
 >
   < {"clients": [
-      { "id": "123", "identity": "user@example.com", "spaceID": "space-id", "joinedAt": "2015-06-05T21:09:26.480Z" },
-      { "id": "456", "identity": "user2@example.com", "spaceID": "space-id", "joinedAt": "2015-06-05T21:09:28.493Z" }
+      { "id": "123", "identity": "user@example.com", "joinedAt": "2015-06-05T21:09:26.480Z" },
+      { "id": "456", "identity": "user2@example.com", "joinedAt": "2015-06-05T21:09:28.493Z" }
     ]
 ```
