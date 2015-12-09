@@ -2,6 +2,6 @@ machine:
   environment:
     CXX: g++-4.8
   pre:
-    - curl https://raw.githubusercontent.com/creationix/nvm/v0.25.3/install.sh | bash
+    - curl https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
   node:
-    version: 4.2.1
+    version: 4.2.3

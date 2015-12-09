@@ -28,7 +28,7 @@
     "sinon-chai": "^2.8.0"
   },
   "engines": {
-    "node": "4.2.1"
+    "node": "4.2.3"
   },
   "homepage": "https://github.com/usecanvas/longhouse#readme",
   "keywords": [
