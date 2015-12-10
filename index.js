@@ -106,6 +106,9 @@ function onMessage(client, message) {
   }
 
   if (message.action === 'cursor') {
+      message.clientId = client.id;
+      message.identity = client.identity;
+
       ClientRegister.clientsInSpace(client.spaceID).forEach((spaceClient) => {
         if (client.id !== spaceClient.id) {
           ClientMessager.send(spaceClient, message);
