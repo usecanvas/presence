@@ -76,6 +76,7 @@ function onConnection(socket) {
     socket.send(JSON.stringify({ ping: true }));
   }, 30000);
 
+
   ClientRegister.registerClient(socket).then(client => {
     Logger.clientLog(client, { event: 'New WebSocket client connected' });
     client.socket.on('close', () => onClose(client));
@@ -104,12 +105,23 @@ function onMessage(client, message) {
     return;
   }
 
+  if (message.action === 'cursor') {
+      ClientRegister.clientsInSpace(client.spaceID).forEach((spaceClient) => {
+        if (client.id !== spaceClient.id) {
+          ClientMessager.send(spaceClient, message);
+        }
+      });
+      ClientRegister.renewClient(client);
+      return;
+  }
+
   if (message.action !== 'ping') {
     const err = `Unrecognized action sent: ${message.action}`;
     Logger.clientLog(client, { event: err });
     ClientMessager.error(client, err);
     return;
   }
+
 
   ClientRegister.renewClient(client);
 }
