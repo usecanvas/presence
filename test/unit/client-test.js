@@ -9,7 +9,7 @@ describe('Client', () => {
   let socket;
 
   beforeEach(() => {
-    socket = new MockSocket('/space?identity=test');
+    socket = new MockSocket('/space?identity=test&username=user');
   });
 
   describe('#create', () => {
@@ -62,8 +62,8 @@ describe('Client', () => {
   describe('#getPresenceKey', () => {
     it('fetches a presence key for the given client', () => {
       return Client.create(socket).then(client => {
-        const expected = `longhouse/spaces/${client.spaceID}/${client.id}/\
-${client.identity}/${client.joinedAt}`;
+        const expected = `longhouse|spaces|${client.spaceID}|${client.id}|\
+${client.identity}|${client.joinedAt}|${client.username}`;
         Client.getPresenceKey(client).should.eql(expected);
       });
     });
@@ -79,6 +79,7 @@ ${client.identity}/${client.joinedAt}`;
           identity: client.identity,
           joinedAt: client.joinedAt,
           spaceID : client.spaceID,
+          username: client.username,
         });
       });
     });
@@ -91,6 +92,7 @@ ${client.identity}/${client.joinedAt}`;
           id      : client.id,
           identity: client.identity,
           joinedAt: client.joinedAt,
+          username: client.username,
         });
       });
     });

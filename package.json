@@ -28,7 +28,7 @@
     "sinon-chai": "^2.8.0"
   },
   "engines": {
-    "node": "4.2.3"
+    "node": "5.5.0"
   },
   "homepage": "https://github.com/usecanvas/longhouse#readme",
   "keywords": [
@@ -46,6 +46,6 @@
     "dev": "nf run -- nodemon",
     "docs": "jsdoc lib initializers . -c .jsdocrc",
     "start": "node index.js",
-    "test": "node node_modules/.bin/_mocha \"test/**/*-test.js\""
+    "test": "node node_modules/.bin/_mocha -R dot \"test/**/*-test.js\""
   }
 }

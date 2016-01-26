@@ -20,7 +20,7 @@ describe('Observer', () => {
     delete require.cache[require.resolve('../../lib/observer')];
     Observer = require('../../lib/observer');
 
-    const clientSocket = new MockSocket('/space?identity=a');
+    const clientSocket = new MockSocket('/space?identity=a&username=user');
     return Client.create(clientSocket).then(_client => {
       client = _client;
     });
@@ -50,7 +50,7 @@ ${KEY_SPLITTER}spaces${KEY_SPLITTER}*`);
     let channel, deregisterSpy, sendSpy, subject;
 
     beforeEach(() => {
-      const subjectSocket = new MockSocket('/space?identity=b');
+      const subjectSocket = new MockSocket('/space?identity=b&username=user');
       sendSpy = Sinon.spy(ClientMessager, 'send');
       Observer.start();
 

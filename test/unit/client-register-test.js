@@ -14,7 +14,7 @@ describe('ClientRegister', () => {
   let socket;
 
   beforeEach(() => {
-    socket = new MockSocket('/space?identity=test');
+    socket = new MockSocket('/space?identity=test&username=user');
   });
 
   describe('#clientsInSpace', () => {
