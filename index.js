@@ -5,9 +5,20 @@ const ClientMessager = require('./lib/client-messager');
 const HTTP           = require('http');
 const Initializers   = require('./initializers');
 const Logger         = require('./lib/logger');
+const Sentry         = require('./lib/sentry');
 const Teamster       = require('teamster');
 const WSServer       = require('ws').Server;
 const app            = require('koa')();
+
+app.use(function* catchError(next) {
+  try {
+    yield next;
+  } catch (err) {
+    Logger.error(err);
+    Sentry.captureRequestException(this.req, err);
+    this.body = { id: 'unexpected', message: 'An unexpected message occurred.' };
+  }
+});
 
 app.use(function* showHealth() {
   if (this.url === '/health') {
@@ -76,12 +87,12 @@ function onConnection(socket) {
     socket.send(JSON.stringify({ ping: true }));
   }, 30000);
 
-
   ClientRegister.registerClient(socket).then(client => {
     Logger.clientLog(client, { event: 'New WebSocket client connected' });
     client.socket.on('close', () => onClose(client));
     client.socket.on('message', message => onMessage(client, message));
   }).catch(err => {
+    Sentry.captureRequestException(socket.upgradeReq, err);
     ClientMessager.error({ socket: socket }, 'Error when joining new client');
     Logger.log({ request_id: requestID, event: 'Could not create new client' });
     Logger.error(err);
@@ -101,16 +112,18 @@ function onMessage(client, message) {
     message = JSON.parse(message);
   } catch(err) {
     Logger.error(err);
+    Sentry.captureRequestException(client.socket.upgradeReq, err,
+                                   { level: 'info', user: client });
     ClientMessager.error(client, 'Unparsable message sent');
     return;
   }
 
   if (message.action === 'cursor') {
-      message.clientId = client.id;
-      const serializedCursor = Object.keys(message).map(k => `${k}=${message[k]}`).join('|');
-      ClientRegister.persistCursor(serializedCursor, client.spaceID);
-      ClientRegister.renewClient(client);
-      return;
+    message.clientId = client.id;
+    const serializedCursor = Object.keys(message).map(k => `${k}=${message[k]}`).join('|');
+    ClientRegister.persistCursor(serializedCursor, client.spaceID);
+    ClientRegister.renewClient(client);
+    return;
   }
 
   if (message.action !== 'ping') {

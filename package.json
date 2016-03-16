@@ -13,6 +13,7 @@
     "lodash": "^3.9.3",
     "logfmt": "^1.2.0",
     "node-uuid": "^1.4.3",
+    "raven": "^0.10.0",
     "redis": "^0.12.1",
     "teamster": "^1.2.0",
     "url-parse": "^1.0.1",
