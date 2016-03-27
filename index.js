@@ -84,7 +84,9 @@ function onConnection(socket) {
   const requestID = socket.upgradeReq.headers['x-request-id'];
 
   socket.pingInterval = setInterval(() => {
-    socket.send(JSON.stringify({ ping: true }));
+    if (socket.readyState === socket.OPEN) {
+      socket.send(JSON.stringify({ ping: true }));
+    }
   }, 30000);
 
   ClientRegister.registerClient(socket).then(client => {
