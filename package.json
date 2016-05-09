@@ -31,7 +31,7 @@
     "sinon-chai": "^2.8.0"
   },
   "engines": {
-    "node": "5.10.0"
+    "node": "6.1.0"
   },
   "homepage": "https://github.com/usecanvas/longhouse#readme",
   "keywords": [
