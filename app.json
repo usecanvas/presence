@@ -4,5 +4,22 @@
   "repository": "https://github.com/usecanvas/longhouse",
   "website": "https://github.com/usecanvas/longhouse",
   "keywords": ["presence", "realtime"],
-  "addons": ["rediscloud"]
+  "addons": ["rediscloud"],
+  "env": {
+    "NODE_ENV": {
+      "description": "The environment Node runs in",
+      "value": "production",
+      "development_value": "development"
+    },
+    "PORT": {
+      "description": "The port this service runs on",
+      "required": false,
+      "development_value": "5003"
+    },
+    "REDIS_URL": {
+      "description": "The URL for Redis",
+      "required": false,
+      "development_value": "redis://redis:6379"
+    }
+  }
 }

@@ -1,0 +1,7 @@
+FROM node:6.1.0
+WORKDIR /presence
+ADD . /presence
+RUN npm install
+RUN useradd -ms /bin/bash docker
+USER docker
+CMD ["npm", "run", "dev"]
