@@ -10,9 +10,12 @@ describe('ClientMessager', () => {
   let client;
 
   beforeEach(() => {
-    const socket = new MockSocket('/space?identity=a');
+    const socket = new MockSocket('/');
 
-    return Client.create(socket).then(_client => {
+    return Client.create({
+      space_id: 's001',
+      identity: 'i001'
+    }, socket).then(_client => {
       client = _client;
     });
   });

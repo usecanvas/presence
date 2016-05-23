@@ -1,5 +1,9 @@
 {
+  "extends": "canvas",
   "env": {
     "node": true
+  },
+  "rules": {
+    "newline-per-chained-call": 0
   }
 }

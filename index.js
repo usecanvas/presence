@@ -16,7 +16,8 @@ app.use(function* catchError(next) {
   } catch (err) {
     Logger.error(err);
     Sentry.captureRequestException(this.req, err);
-    this.body = { id: 'unexpected', message: 'An unexpected message occurred.' };
+    this.body =
+      { id: 'unexpected', message: 'An unexpected message occurred.' };
   }
 });
 
@@ -44,8 +45,8 @@ Initializers.start()
  */
 function createTeamster() {
   Teamster.run(startServers, {
-    fork      : process.env.NODE_ENV === 'production',
-    numWorkers: parseInt(process.env.NUM_WORKERS, 10) || 1,
+    fork: process.env.NODE_ENV === 'production',
+    numWorkers: parseInt(process.env.NUM_WORKERS, 10) || 1
   });
 }
 
@@ -81,62 +82,69 @@ function startWSServer(httpServer) {
  * @param {WS.WebSocket} socket The new WebSocket connection
  */
 function onConnection(socket) {
-  const requestID = socket.upgradeReq.headers['x-request-id'];
-
-  socket.pingInterval = setInterval(() => {
+  socket.pingInterval = setInterval(_ => {
     if (socket.readyState === socket.OPEN) {
       socket.send(JSON.stringify({ ping: true }));
     }
   }, 30000);
 
-  ClientRegister.registerClient(socket).then(client => {
-    Logger.clientLog(client, { event: 'New WebSocket client connected' });
-    client.socket.on('close', () => onClose(client));
-    client.socket.on('message', message => onMessage(client, message));
-  }).catch(err => {
-    Sentry.captureRequestException(socket.upgradeReq, err);
-    ClientMessager.error({ socket: socket }, 'Error when joining new client');
-    Logger.log({ request_id: requestID, event: 'Could not create new client' });
-    Logger.error(err);
-    socket.close();
-  });
+  socket.on('message', message => onMessage(socket, message));
 }
 
 /**
  * Handle a message sent by a client.
  *
  * @private
- * @param {Client} client The client that sent the message
+ * @param {WS.WebSocket} socket The socket over which the message was sent
  * @param {string} message The message sent by the client
  */
-function onMessage(client, message) {
+function onMessage(socket, message) {
   try {
     message = JSON.parse(message);
-  } catch(err) {
+  } catch (err) {
     Logger.error(err);
-    Sentry.captureRequestException(client.socket.upgradeReq, err,
-                                   { level: 'info', user: client });
-    ClientMessager.error(client, 'Unparsable message sent');
+    Sentry.captureRequestException(socket.upgradeReq, err,
+                                   { level: 'info', user: socket.client });
+    ClientMessager.socketSend(socket, { error: 'Unparsable message sent' });
     return;
   }
 
-  if (message.action === 'cursor') {
-    message.clientId = client.id;
-    const serializedCursor = Object.keys(message).map(k => `${k}=${message[k]}`).join('|');
-    ClientRegister.persistCursor(serializedCursor, client.spaceID);
-    ClientRegister.renewClient(client);
+  if (message.action === 'join' && !socket.client) {
+    ClientRegister.registerClient(message, socket).then(client => {
+      socket.client = client;
+      Logger.clientLog(client, { event: 'New WebSocket client connected' });
+      client.socket.on('close', _ => onClose(client));
+    }).catch(err => {
+      const requestID = socket.upgradeReq.headers['x-request-id'];
+      Sentry.captureRequestException(socket.upgradeReq, err);
+      ClientMessager.error({ socket }, 'Error when joining new client');
+      Logger.log({ request_id: requestID,
+                   event: 'Could not create new client' });
+      Logger.error(err);
+      socket.close();
+    });
+
+    return;
+  }
+
+  if (!socket.client) return;
+
+  if (message.action === 'update') {
+    message.clientId = socket.client.id;
+    return ClientRegister.updateMeta(socket.client, message).then(_ => {
+      ClientRegister.renewClient(socket.client);
+    });
     return;
   }
 
   if (message.action !== 'ping') {
     const err = `Unrecognized action sent: ${message.action}`;
-    Logger.clientLog(client, { event: err });
-    ClientMessager.error(client, err);
+    Logger.clientLog(socket.client, { event: err });
+    ClientMessager.error(socket.client, err);
     return;
   }
 
-
-  ClientRegister.renewClient(client);
+  ClientRegister.renewClient(socket.client);
 }
 
 /**

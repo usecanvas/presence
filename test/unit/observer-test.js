@@ -11,17 +11,18 @@ const Redis          = require('../../lib/redis');
 const Sinon          = require('sinon');
 
 describe('Observer', () => {
-  let Observer, client, subscriber;
+  let Observer, client, joinMessage, subscriber;
 
   beforeEach(() => {
+    joinMessage = { space_id: 'space', identity: 'a' };
     subscriber = Redis.createClient();
     Sinon.stub(Redis, 'createClient', () => subscriber);
 
     delete require.cache[require.resolve('../../lib/observer')];
     Observer = require('../../lib/observer');
 
-    const clientSocket = new MockSocket('/space?identity=a&username=user');
-    return Client.create(clientSocket).then(_client => {
+    const clientSocket = new MockSocket('/');
+    return Client.create(joinMessage, clientSocket).then(_client => {
       client = _client;
     });
   });
@@ -50,7 +51,8 @@ ${KEY_SPLITTER}spaces${KEY_SPLITTER}*`);
     let channel, deregisterSpy, sendSpy, subject;
 
     beforeEach(() => {
-      const subjectSocket = new MockSocket('/space?identity=b&username=user');
+      joinMessage.identity = 'b';
+      const subjectSocket = new MockSocket('/');
       sendSpy = Sinon.spy(ClientMessager, 'send');
       Observer.start();
 
@@ -58,7 +60,7 @@ ${KEY_SPLITTER}spaces${KEY_SPLITTER}*`);
       Sinon.stub(ClientRegister, 'getClient', () => subject);
       deregisterSpy = Sinon.spy(ClientRegister, 'deregisterClient');
 
-      return Client.create(subjectSocket).then(_subject => {
+      return Client.create(joinMessage, subjectSocket).then(_subject => {
         subject = _subject;
         channel = `__keyspace@0__:${Client.getPresenceKey(subject)}`;
       });
@@ -77,8 +79,8 @@ ${KEY_SPLITTER}spaces${KEY_SPLITTER}*`);
 
         subscriber.emit('pmessage', '', channel, message);
         sendSpy.should.have.been.calledWith(client, {
-          event: 'remote join',
-          client: Client.serialize(subject)
+          event: 'remote join/update',
+          client: Client.toRedisHash(subject)
         });
       });
     });
@@ -95,7 +97,7 @@ ${KEY_SPLITTER}spaces${KEY_SPLITTER}*`);
       it('publishes "remote leave"', () => {
         sendSpy.should.have.been.calledWith(client, {
           event: 'remote leave',
-          client: Client.serialize(subject)
+          client: Client.toRedisHash(subject)
         });
       });
 
@@ -119,7 +121,7 @@ ${KEY_SPLITTER}spaces${KEY_SPLITTER}*`);
         subscriber.emit('pmessage', '', channel, message);
         sendSpy.should.have.been.calledWith(client, {
           event: 'remote leave',
-          client: Client.serialize(subject)
+          client: Client.toRedisHash(subject)
         });
       });
     });
