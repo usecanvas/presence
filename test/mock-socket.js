@@ -1,6 +1,6 @@
 'use strict';
 
-const UUID = require('node-uuid');
+const UUID = require('uuid');
 
 class MockSocket {
   constructor(pathQuery) {
